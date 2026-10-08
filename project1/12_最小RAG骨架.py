@@ -4,13 +4,14 @@
 ====================================
 embedding : BAAI/bge-m3（SiliconFlow，1024 维，免费）
 精排      : BAAI/bge-reranker-v2-m3（SiliconFlow，免费）
+LLM       : Qwen/Qwen3-8B（SiliconFlow，免费，需实名认证）
 检索架构  : 两段式 —— embedding 粗召回 top-N → reranker 精排 top-k
-LLM       : 模拟输出占位（待接入课程统一接口后替换 answer()）
 配套语料  : corpus/os_ch1.txt
 运行      : python 12_最小RAG骨架.py
 """
 
 import re
+import time
 import requests
 import numpy as np
 
@@ -24,10 +25,13 @@ DOCS_PATH = "corpus/os_ch1.txt"
 API_KEY = "sk-fsaaxrhrfijelnmwjvpifugzoiahnjygylgemmcroxdmxaqw"
 EMBED_URL = "https://api.siliconflow.cn/v1/embeddings"
 RERANK_URL = "https://api.siliconflow.cn/v1/rerank"
+LLM_URL = "https://api.siliconflow.cn/v1/chat/completions"
 EMBED_MODEL = "BAAI/bge-m3"
 RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
+LLM_MODEL = "Qwen/Qwen3-8B"
 TIMEOUT = 30
 BATCH_SIZE = 32
+USE_MOCK_LLM = False
 
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
@@ -35,8 +39,8 @@ HEADERS = {
 }
 
 SYSTEM_PROMPT = (
-    "你是课程助教。你只能依据【资料】回答，不得编造。"
-    "若资料不足以回答，必须只输出：课程资料中未找到相关内容。"
+    "你是课程助教。请依据【资料】回答问题，答案必须来自资料内容。"
+    "只有当资料中完全没有相关信息时，才输出且仅输出：课程资料中未找到相关内容。"
     "回答末尾注明来源段落编号。"
 )
 REFUSE_SENTENCE = "课程资料中未找到相关内容。"
@@ -118,6 +122,41 @@ def retrieve(query: str, chunks: list, chunk_embeddings: np.ndarray,
     return [(candidates[idx], score) for idx, score in reranked]
 
 
+def llm_call(system_prompt: str, user_prompt: str, max_retries: int = 2) -> str:
+    payload = {
+        "model": LLM_MODEL,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": 0.3,
+        "top_p": 0.7,
+        "max_tokens": 1024,
+        "stream": False,
+        "enable_thinking": False,
+    }
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.post(LLM_URL, headers=HEADERS, json=payload, timeout=TIMEOUT)
+            if resp.status_code == 429:
+                if attempt < max_retries:
+                    wait = 2 ** attempt
+                    print(f"  [429 限流] {wait}s 后重试...")
+                    time.sleep(wait)
+                    continue
+                resp.raise_for_status()
+            if resp.status_code != 200:
+                raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:200]}")
+            data = resp.json()
+            return data["choices"][0]["message"]["content"]
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+            if attempt < max_retries:
+                time.sleep(1)
+                continue
+            raise RuntimeError(f"LLM 调用失败: {e}")
+    raise RuntimeError("LLM 重试次数已耗尽")
+
+
 def mock_llm(prompt: str) -> str:
     return ("[模拟回答] 已依据检索到的资料生成回答。\n"
             "（接入真实 LLM 接口后，此处将返回基于资料的实际生成内容。）")
@@ -131,8 +170,10 @@ def answer(query: str, retrieved: list) -> str:
         context_parts.append(
             f"【资料 {chunk['chunk_id']}｜来源：{chunk['source']}｜相关度={score:.4f}】\n{chunk['text']}")
     context = "\n\n".join(context_parts)
-    prompt = f"{SYSTEM_PROMPT}\n\n【资料】\n{context}\n\n【问题】{query}\n\n【回答】"
-    return mock_llm(prompt)
+    user_prompt = f"【资料】\n{context}\n\n【问题】{query}\n\n【回答】"
+    if USE_MOCK_LLM:
+        return mock_llm(user_prompt)
+    return llm_call(SYSTEM_PROMPT, user_prompt)
 
 
 def rag_query(query: str, chunks: list, chunk_embeddings: np.ndarray) -> dict:
@@ -142,13 +183,14 @@ def rag_query(query: str, chunks: list, chunk_embeddings: np.ndarray) -> dict:
         return {"query": query, "answer": REFUSE_SENTENCE,
                 "refused": True, "sources": [], "top_score": top_score}
     ans = answer(query, retrieved)
-    return {"query": query, "answer": ans, "refused": False,
+    llm_refused = ans.strip().startswith(REFUSE_SENTENCE)
+    return {"query": query, "answer": ans, "refused": llm_refused,
             "sources": [c["chunk_id"] for c, _ in retrieved], "top_score": top_score}
 
 
 if __name__ == "__main__":
     chunks = load_and_chunk(DOCS_PATH)
-    print(f"共加载 {len(chunks)} 个分块，正在预计算语料 embedding（bge-m3, 1024维）...")
+    print(f"共加载 {len(chunks)} 个分块，正在预计算语料 embedding...")
     chunk_embeddings = embed_documents([c["text"] for c in chunks])
     print(f"embedding 矩阵形状: {chunk_embeddings.shape}")
     for c in chunks:
@@ -158,7 +200,6 @@ if __name__ == "__main__":
         "进程有哪几种状态？",
         "进程和线程有什么区别？",
         "明天天气怎么样？",
-        "帮我写一段 Python 排序代码",
     ]
     for q in test_queries:
         print(f"\n{'=' * 55}")
