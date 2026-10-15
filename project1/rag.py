@@ -4,46 +4,19 @@ RAG 问答系统（Phase 2）
 ======================
 加载 build_kb.py 构建的知识库，回答问题并附带教材页码引用。
 满足 R1~R6 行为约束。
-
 用法: python rag.py
 """
-import os
 import json
 import time
 import requests
 import numpy as np
-
-VECTORS_PATH = "kb_vectors.npy"
-CHUNKS_PATH = "kb_chunks.json"
-RECALL_N = 20
-TOP_K = 3
-REFUSE_THRESHOLD = 0.3
-
-EMBED_URL = "https://api.siliconflow.cn/v1/embeddings"
-RERANK_URL = "https://api.siliconflow.cn/v1/rerank"
-LLM_URL = "https://api.siliconflow.cn/v1/chat/completions"
-EMBED_MODEL = "BAAI/bge-m3"
-RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
-LLM_MODEL = "Qwen/Qwen3-8B"
-TIMEOUT = 60
-
-
-def load_api_key():
-    key = os.environ.get("SILICONFLOW_API_KEY")
-    if key:
-        return key.strip()
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
-    if os.path.exists(env_path):
-        with open(env_path, encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("SILICONFLOW_API_KEY="):
-                    return line.split("=", 1)[1].strip().strip('"').strip("'")
-    raise RuntimeError("未找到 API key，请检查 .env 文件")
-
-
-API_KEY = load_api_key()
-HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+from config import (
+    VECTORS_PATH, CHUNKS_PATH,
+    RECALL_N, TOP_K, REFUSE_THRESHOLD,
+    EMBED_URL, RERANK_URL, LLM_URL,
+    EMBED_MODEL, RERANK_MODEL, LLM_MODEL,
+    TIMEOUT, HEADERS,
+)
 
 SYSTEM_PROMPT = (
     "你是一个基于教材回答问题的课程助教。你必须严格遵守以下规则：\n"
@@ -73,12 +46,14 @@ def embed(text):
 
 
 def retrieve(query, chunks, vectors):
+    """两段式检索：embedding 粗召回 top-N → reranker 精排 top-k"""
     q_vec = embed(query)
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
     norms[norms == 0] = 1.0
     sims = (q_vec @ (vectors / norms).T).flatten()
     top_n_idx = np.argsort(sims)[::-1][:RECALL_N]
     candidates = [chunks[i] for i in top_n_idx]
+
     if not candidates:
         return []
     resp = requests.post(RERANK_URL, headers=HEADERS, json={
@@ -122,9 +97,11 @@ def ask(query, chunks, vectors):
     retrieved = retrieve(query, chunks, vectors)
     top_score = retrieved[0][1] if retrieved else 0.0
     print(f"  [检索] top_score={top_score:.4f}, 召回{len(retrieved)}块")
+
     if top_score < REFUSE_THRESHOLD:
         return {"answer": REFUSE_SENTENCE, "refused": True,
                 "top_score": top_score, "sources": []}
+
     context_parts = []
     for chunk, score in retrieved:
         page_info = f"p.{chunk['page_start']}"
@@ -134,8 +111,10 @@ def ask(query, chunks, vectors):
             f"【教材{page_info}｜章节：{chunk['chapter']}｜相关度={score:.4f}】\n{chunk['text'][:2000]}")
     context = "\n\n".join(context_parts)
     user_prompt = f"【资料】\n{context}\n\n【问题】{query}\n\n【回答】"
+
     answer = llm_call(SYSTEM_PROMPT, user_prompt)
     refused = answer.strip().startswith(REFUSE_SENTENCE)
+
     return {"answer": answer, "refused": refused, "top_score": top_score,
             "sources": [(c["page_start"], c["page_end"], c["chapter"]) for c, _ in retrieved]}
 
