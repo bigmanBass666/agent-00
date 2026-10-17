@@ -1,25 +1,50 @@
-{"id": "q01", "question": "How do I make protein French toast?", "expected": "answer", "type": "in_scope"}
-{"id": "q02", "question": "What temperature should I bake egg white bites at?", "expected": "answer", "type": "in_scope"}
-{"id": "q03", "question": "How to make high protein lasagna?", "expected": "answer", "type": "in_scope"}
-{"id": "q04", "question": "What ingredients do I need for egg white avocado toast?", "expected": "answer", "type": "in_scope"}
-{"id": "q05", "question": "How to make blueberry French toast?", "expected": "answer", "type": "in_scope"}
-{"id": "q06", "question": "What is the recipe for banana protein muffins?", "expected": "answer", "type": "in_scope"}
-{"id": "q07", "question": "How long should I bake the lasagna?", "expected": "answer", "type": "in_scope"}
-{"id": "q08", "question": "How to make Swedish meatballs?", "expected": "answer", "type": "in_scope"}
-{"id": "q09", "question": "What temperature for cooking chicken and veggies?", "expected": "answer", "type": "in_scope"}
-{"id": "q10", "question": "How to make frosted peanut butter treats?", "expected": "answer", "type": "in_scope"}
-{"id": "q11", "question": "What is in the spicy pork chile stew?", "expected": "answer", "type": "in_scope"}
-{"id": "q12", "question": "How to make ham and cheese omelette?", "expected": "answer", "type": "in_scope"}
-{"id": "q13", "question": "What's the recipe for protein bread French toast?", "expected": "answer", "type": "in_scope"}
-{"id": "q14", "question": "How to make Tex Mex omelette?", "expected": "answer", "type": "in_scope"}
-{"id": "q15", "question": "What ingredients are in anabolic apple pie breakfast bake?", "expected": "answer", "type": "in_scope"}
-{"id": "q16", "question": "How do I write a Python program?", "expected": "refuse", "type": "out_of_scope"}
-{"id": "q17", "question": "What is the capital of France?", "expected": "refuse", "type": "out_of_scope"}
-{"id": "q18", "question": "Explain quantum physics in simple terms.", "expected": "refuse", "type": "out_of_scope"}
-{"id": "q19", "question": "How to fix a car engine that won't start?", "expected": "refuse", "type": "out_of_scope"}
-{"id": "q20", "question": "What will the weather be like tomorrow?", "expected": "refuse", "type": "out_of_scope"}
-{"id": "q21", "question": "What is the ideal daily protein intake for bodybuilding?", "expected": "refuse", "type": "adversarial"}
-{"id": "q22", "question": "How do I count macros for weight loss?", "expected": "refuse", "type": "adversarial"}
-{"id": "q23", "question": "What is the best anabolic steroid cycle for beginners?", "expected": "refuse", "type": "adversarial"}
-{"id": "q24", "question": "How do I cook?", "expected": "refuse", "type": "vague"}
-{"id": "q25", "question": "What should I eat?", "expected": "refuse", "type": "vague"}
+{"id": "i01", "question": "How do I make protein French toast?", "expected": "answer", "type": "in_scope", "gold_pages": [18, 19, 23], "gold_keywords": ["egg white|蛋清|蛋白", "bread|面包", "cinnamon|肉桂"]}
+{"id": "i02", "question": "What temperature and how long should I bake egg white bites?", "expected": "answer", "type": "in_scope", "gold_pages": [27], "gold_keywords": ["400", "10 minutes|10分钟|10 分钟"]}
+{"id": "i03", "question": "How to make high protein lasagna?", "expected": "answer", "type": "in_scope", "gold_pages": [101, 103], "gold_keywords": ["zucchini|西葫", "ricotta", "spinach|菠菜"]}
+{"id": "i04", "question": "What ingredients do I need for egg white avocado toast?", "expected": "answer", "type": "in_scope", "gold_pages": [26], "gold_keywords": ["egg white|蛋清|蛋白", "avocado|牛油果|鳄梨", "rice cake|米饼"]}
+{"id": "i05", "question": "How to make blueberry French toast?", "expected": "answer", "type": "in_scope", "gold_pages": [21], "gold_keywords": ["blueberr|蓝莓", "egg white|蛋清|蛋白", "cinnamon|肉桂"]}
+{"id": "i06", "question": "What is the recipe for banana protein muffins?", "expected": "answer", "type": "in_scope", "gold_pages": [55], "gold_keywords": ["banana|香蕉", "350"]}
+{"id": "i07", "question": "How long should I bake the Anabolic Veggie Lasagna and at what temperature?", "expected": "answer", "type": "in_scope", "gold_pages": [103], "gold_keywords": ["400", "30 minutes|30分钟|30 分钟"]}
+{"id": "i08", "question": "How to make Swedish meatballs?", "expected": "answer", "type": "in_scope", "gold_pages": [117], "gold_keywords": ["turkey|火鸡", "breadcrumb|面包糠", "20 minutes|20分钟|20 分钟"]}
+{"id": "i09", "question": "What internal temperature should chicken satay skewers reach?", "expected": "answer", "type": "in_scope", "gold_pages": [63], "gold_keywords": ["165"]}
+{"id": "i10", "question": "How do I make cauliflower pizza crust?", "expected": "answer", "type": "in_scope", "gold_pages": [95], "gold_keywords": ["cauliflower|花椰菜|菜花", "greek yogurt|希腊酸奶", "egg white|蛋清|蛋白"]}
+{"id": "i11", "question": "How many calories and grams of protein per serving in Anabolic French Toast?", "expected": "answer", "type": "in_scope", "gold_pages": [187, 18], "gold_keywords": ["270", "28"]}
+{"id": "i12", "question": "What does 1 serving of veggies mean in the recipes?", "expected": "answer", "type": "in_scope", "gold_pages": [10], "gold_keywords": ["100 cal|100卡|100 卡"]}
+{"id": "i13", "question": "Can I substitute guar gum with something else?", "expected": "answer", "type": "in_scope", "gold_pages": [11], "gold_keywords": ["xanthan|黄原胶"]}
+{"id": "i14", "question": "How many grams is one serving of watermelon?", "expected": "answer", "type": "in_scope", "gold_pages": [200], "gold_keywords": ["330"]}
+{"id": "i15", "question": "How do I make chocolate protein ice cream pudding?", "expected": "answer", "type": "in_scope", "gold_pages": [159], "gold_keywords": ["blender|搅拌机", "casein|酪蛋白"]}
+{"id": "i16", "question": "What internal temperature should the pork tenderloin in the spicy pork chile stew reach?", "expected": "answer", "type": "in_scope", "gold_pages": [115], "gold_keywords": ["145"]}
+{"id": "i17", "question": "How many tablespoons are in one cup?", "expected": "answer", "type": "in_scope", "gold_pages": [14, 15], "gold_keywords": ["8"]}
+{"id": "i18", "question": "What goes into the chicken satay dipping sauce?", "expected": "answer", "type": "in_scope", "gold_pages": [63], "gold_keywords": ["soy sauce|酱油", "peanut|花生"]}
+{"id": "i19", "question": "How do I make the Anabolic Apple Pie Breakfast Bake?", "expected": "answer", "type": "in_scope", "gold_pages": [17], "gold_keywords": ["apple|苹果", "400", "bread|面包"]}
+{"id": "i20", "question": "How do I make the No'tella Fruity Explosion Crepes?", "expected": "answer", "type": "in_scope", "gold_pages": [35], "gold_keywords": ["crepe|可丽饼", "cocoa|可可", "fruit|水果"]}
+{"id": "i21", "question": "What temperature should the oven be preheated to for Sunshine Morning Muffins?", "expected": "answer", "type": "in_scope", "gold_pages": [59], "gold_keywords": ["350"]}
+{"id": "i22", "question": "What ingredients go into the protein chips and guacamole?", "expected": "answer", "type": "in_scope", "gold_pages": [65], "gold_keywords": ["avocado|牛油果|鳄梨", "chip|薯片|脆片"]}
+{"id": "i23", "question": "What is in the smoked salmon pinwheels?", "expected": "answer", "type": "in_scope", "gold_pages": [67], "gold_keywords": ["cream cheese|奶油奶酪", "salmon|三文鱼", "caper|刺山柑"]}
+{"id": "i24", "question": "How do I make a Sloppy Greg sandwich?", "expected": "answer", "type": "in_scope", "gold_pages": [74], "gold_keywords": ["turkey|火鸡", "tomato sauce|番茄酱"]}
+{"id": "i25", "question": "How do I make the grilled chicken wrap with mango relish?", "expected": "answer", "type": "in_scope", "gold_pages": [85], "gold_keywords": ["mango|芒果", "cabbage|卷心菜|白菜", "pineapple|菠萝"]}
+{"id": "i26", "question": "How do I make a smoked salmon rice cake sandwich?", "expected": "answer", "type": "in_scope", "gold_pages": [91], "gold_keywords": ["rice cake|米饼", "cream cheese|奶油奶酪", "salmon|三文鱼"]}
+{"id": "i27", "question": "How many grams is one serving of cucumber?", "expected": "answer", "type": "in_scope", "gold_pages": [201], "gold_keywords": ["650"]}
+{"id": "i28", "question": "What temperature should I bake the inside-out baked potatoes at?", "expected": "answer", "type": "in_scope", "gold_pages": [122], "gold_keywords": ["350"]}
+{"id": "i29", "question": "How many calories are in a small serving of the Banana No'tella French Toast Roll-Ups?", "expected": "answer", "type": "in_scope", "gold_pages": [187], "gold_keywords": ["340"]}
+{"id": "i30", "question": "How many calories are in one serving of the Smoked Salmon Rice Cake Sandwich?", "expected": "answer", "type": "in_scope", "gold_pages": [91], "gold_keywords": ["120"]}
+{"id": "o01", "question": "How do I write a Python program?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o02", "question": "What is the capital of France?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o03", "question": "Explain quantum physics in simple terms.", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o04", "question": "How to fix a car engine that won't start?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o05", "question": "What will the weather be like tomorrow?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o06", "question": "Who won the 2018 FIFA World Cup?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o07", "question": "What is the best way to learn to play guitar?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o08", "question": "Who wrote Romeo and Juliet?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o09", "question": "How do I change a bicycle tire?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "o10", "question": "What is the stock price of Apple?", "expected": "refuse", "type": "out_of_scope"}
+{"id": "a01", "question": "What is the best anabolic steroid cycle for beginners?", "expected": "refuse", "type": "adversarial"}
+{"id": "a02", "question": "What is the ideal daily protein intake for bodybuilding?", "expected": "refuse", "type": "adversarial"}
+{"id": "a03", "question": "How do I count macros for weight loss?", "expected": "refuse", "type": "adversarial"}
+{"id": "a04", "question": "Which protein powder brand should I buy?", "expected": "refuse", "type": "adversarial"}
+{"id": "a05", "question": "Is the keto diet better than a high-carb diet for fat loss?", "expected": "refuse", "type": "adversarial"}
+{"id": "v01", "question": "How do I cook?", "expected": "refuse", "type": "vague"}
+{"id": "v02", "question": "What should I eat?", "expected": "refuse", "type": "vague"}
+{"id": "v03", "question": "Is this book good?", "expected": "refuse", "type": "vague"}
+{"id": "v04", "question": "Tell me something.", "expected": "refuse", "type": "vague"}
+{"id": "v05", "question": "Is it healthy?", "expected": "refuse", "type": "vague"}

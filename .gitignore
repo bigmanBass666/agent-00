@@ -13,6 +13,7 @@ textbook.pdf
 
 # 生成的知识库文件（运行 build_kb.py 重新生成）
 kb_vectors.npy
+kb_chunks.json
 
 # 系统
 .DS_Store

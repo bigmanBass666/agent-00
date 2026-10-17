@@ -34,6 +34,7 @@ MIN_CHUNK_CHARS = 200    # 过短的块合并到前一块
 RECALL_N = 20            # embedding 粗召回候选数
 TOP_K = 3                # reranker 精排后喂 LLM 的块数
 REFUSE_THRESHOLD = 0.3   # 拒答阈值（换教材后用 calibrate_threshold.py 校准）
+HYBRID_RECALL = True     # 混合召回：embedding 余弦 + 词汇覆盖率（救表格/短事实类查询）
 
 # ---------------------------------------------------------------
 # 模型配置（SiliconFlow 免费层）

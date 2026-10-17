@@ -1,0 +1,5 @@
+{"id": "h01", "question": "How do I make the Banana Chocolate Protein Muffins?", "expected": "answer", "type": "in_scope", "gold_pages": [51], "gold_keywords": ["banana|香蕉", "chocolate|巧克力"]}
+{"id": "h02", "question": "How many grams of protein are in a large serving of Anabolic French Toast?", "expected": "answer", "type": "in_scope", "gold_pages": [187], "gold_keywords": ["45"]}
+{"id": "h03", "question": "How do I make a veggie bologna sandwich?", "expected": "answer", "type": "in_scope", "gold_pages": [81], "gold_keywords": ["bologna|博洛尼亚|素肉"]}
+{"id": "h04", "question": "How many grams is one serving of lettuce?", "expected": "answer", "type": "in_scope", "gold_pages": [201], "gold_keywords": ["700"]}
+{"id": "h05", "question": "How do I make sushi rolls at home?", "expected": "refuse", "type": "out_of_scope", "note": "答辩陷阱题：书内无 sushi"}
