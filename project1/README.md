@@ -143,6 +143,7 @@ hits = knowledge_search("What temperature should I bake egg white bites at?")
 |--------|------|
 | 混合检索（全文 + 向量融合排序） | `rag.py` `lexical_recall()`：embedding 余弦 + IDF 加权词汇召回双路合并去重 |
 | 检索结果重排序（cross-encoder） | `rag.py` `retrieve()`：bge-reranker-v2-m3 交叉编码器对初检 top-40 二次排序取 top-3 |
+| 对比实验（同一教材对比检索质量） | 混合召回 vs 纯向量，50 题 A/B，结论与逐题归因见 `docs/对比实验_混合召回.md` |
 
 ## API Key 安全
 
