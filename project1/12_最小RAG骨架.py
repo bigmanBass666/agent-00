@@ -22,7 +22,9 @@ RECALL_N = 20
 REFUSE_THRESHOLD = 0.5
 DOCS_PATH = "corpus/os_ch1.txt"
 
-API_KEY = "sk-fsaaxrhrfijelnmwjvpifugzoiahnjygylgemmcroxdmxaqw"
+# 从环境变量 / .env 读取，严禁在代码中硬编码（课程要求）
+from config import load_api_key
+API_KEY = load_api_key()
 EMBED_URL = "https://api.siliconflow.cn/v1/embeddings"
 RERANK_URL = "https://api.siliconflow.cn/v1/rerank"
 LLM_URL = "https://api.siliconflow.cn/v1/chat/completions"

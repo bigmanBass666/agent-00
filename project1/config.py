@@ -65,10 +65,9 @@ def load_api_key():
                 line = line.strip()
                 if line.startswith("SILICONFLOW_API_KEY="):
                     return line.split("=", 1)[1].strip().strip('"').strip("'")
-    raise RuntimeError(
-        "未找到 API key。请设置环境变量 SILICONFLOW_API_KEY，"
-        "或在脚本同目录创建 .env 文件，写入：SILICONFLOW_API_KEY=你的key"
-    )
+    print("[警告] 未找到 API key：离线检查（文件/一致性/元数据）仍可用，"
+          "涉及模型调用的步骤请先配置 .env 或环境变量 SILICONFLOW_API_KEY")
+    return ""
 
 
 API_KEY = load_api_key()

@@ -34,7 +34,11 @@ pip install requests numpy pymupdf
 ```bash
 cd project1
 
-# 0. 配置 API key（创建 .env 文件）
+# 0. 零依赖验证（无需 API key、无需教材 PDF）：
+#    直接查看 50 条真实运行留痕，含课内/课外/诱导/失败四类样本
+python demo_offline.py
+
+# 1. 配置 API key（创建 .env 文件）
 echo "SILICONFLOW_API_KEY=你的key" > .env
 
 # 1. 放入教材 PDF（默认文件名 textbook.pdf，可在 config.py 修改）
@@ -71,7 +75,7 @@ project1/
 │   └── PPT大纲.md              # 答辩 PPT 大纲（18 页，内容已完成）
 └── evals/
     └── cookbook/
-        ├── eval_set.jsonl      # 评测集（32 条，含 gold_pages/gold_keywords）
+        ├── eval_set.jsonl      # 评测集（50 条，含 gold_pages/gold_keywords）
         ├── results.jsonl       # 最终评测结果（逐条）
         ├── results_round1.jsonl  # 第 1 轮（基线）
         └── results_round2.jsonl  # 第 2 轮（混合召回 + Prompt 重写）
