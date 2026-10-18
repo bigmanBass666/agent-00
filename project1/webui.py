@@ -46,6 +46,52 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    # ---------- 转人工工单（老师原话：答不上来就自动转人工，人在旁边休息）----------
+    TICKET_PATH = os.path.join(ROOT, "tickets.jsonl")
+
+    @classmethod
+    def _read_tickets(cls):
+        if not os.path.exists(cls.TICKET_PATH):
+            return []
+        rows = []
+        with open(cls.TICKET_PATH, encoding="utf-8") as f:
+            for ln in f:
+                ln = ln.strip()
+                if ln:
+                    rows.append(json.loads(ln))
+        return rows
+
+    @classmethod
+    def _new_ticket(cls, question):
+        from datetime import datetime as _dt
+        rows = cls._read_tickets()
+        now = _dt.now()
+        day = now.strftime("%Y%m%d")
+        seq = sum(1 for r in rows if r.get("id", "").startswith(f"T{day}-")) + 1
+        ticket = {
+            "id": f"T{day}-{seq:03d}",
+            "question": question,
+            "time": now.strftime("%Y-%m-%d %H:%M:%S"),
+            "status": "pending",
+        }
+        with open(cls.TICKET_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(ticket, ensure_ascii=False) + "\n")
+        return ticket
+
+    @classmethod
+    def _resolve_ticket(cls, ticket_id):
+        rows = cls._read_tickets()
+        hit = False
+        for r in rows:
+            if r.get("id") == ticket_id:
+                r["status"] = "resolved"
+                hit = True
+        if hit:
+            with open(cls.TICKET_PATH, "w", encoding="utf-8") as f:
+                for r in rows:
+                    f.write(json.dumps(r, ensure_ascii=False) + "\n")
+        return hit
+
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             path = os.path.join(ROOT, "index.html")
@@ -53,15 +99,30 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, json.dumps({"error": "webui/index.html 缺失"}))
                 return
             self._send(200, open(path, "rb").read(), "text/html; charset=utf-8")
-        elif self.path == "/api/info":
+        elif self.path == "/api/info":           # 前端动态显示块数/向量维度
             self._send(200, json.dumps({
                 "chunk_count": len(CHUNKS),
                 "vector_dim": VECTORS.shape[1] if VECTORS is not None else 0,
             }, ensure_ascii=False))
+        elif self.path == "/handoff":            # 人工工作台：接 AI 答不上来的单
+            path = os.path.join(ROOT, "handoff.html")
+            if not os.path.exists(path):
+                self._send(500, json.dumps({"error": "webui/handoff.html 缺失"}))
+                return
+            self._send(200, open(path, "rb").read(), "text/html; charset=utf-8")
+        elif self.path == "/api/tickets":        # 工单队列（倒序，新单在前）
+            self._send(200, json.dumps(self._read_tickets()[::-1],
+                                       ensure_ascii=False))
         else:
             self._send(404, json.dumps({"error": "not found"}))
 
     def do_POST(self):
+        if self.path == "/api/tickets/resolve":  # 人工标记已处理
+            n = int(self.headers.get("Content-Length", 0))
+            payload = json.loads(self.rfile.read(n) or b"{}")
+            ok = self._resolve_ticket((payload.get("id") or "").strip())
+            self._send(200, json.dumps({"ok": ok}))
+            return
         if self.path != "/api/ask":
             self._send(404, json.dumps({"error": "not found"}))
             return
@@ -73,6 +134,9 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(400, json.dumps({"error": "问题为空"}, ensure_ascii=False))
                 return
             result = ask(question, CHUNKS, VECTORS)
+            # 拒答 = 系统答不了 → 自动生成工单转人工（核心要求之一）
+            if result.get("refused"):
+                result["ticket"] = self._new_ticket(question)
             # context 体积大，不回传给前端
             result.pop("context", None)
             # 清洗来源片段中的 PDF 提取噪音
