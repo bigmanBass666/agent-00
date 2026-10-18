@@ -14,20 +14,28 @@
 用法: python judge_results.py
 """
 import json
+import os
 
-RESULTS = "evals/cookbook/results.jsonl"
+# 课程口径判定入口：默认主线 Cookbook，换书评测时用 JUDGE_RESULTS 指定
+RESULTS = os.environ.get("JUDGE_RESULTS", "evals/cookbook/results.jsonl")
 
 # ---------------------------------------------------------------
 # 人工复核覆盖表（自动规则判不准的样本，逐条给出理由）
+# ⚠️ 按题集隔离：同名 id 在不同书里语义完全不同（i04 在 Cookbook 是牛油果吐司、
+#    在《原子习惯》是桑代克拼图盒），复核表套错书会污染判定。
 # ---------------------------------------------------------------
-OVERRIDES = {
-    "i03": ("correct", "内容正确（西葫芦/菠菜/奶酪齐全），仅 ricotta 译为“奶油奶酪”，属术语译法差异"),
-    "i04": ("wrong", "答案缺核心食材 egg white（蛋清），与题目所指菜品不符"),
-    "i08": ("hallucinated", "原文 ground turkey，答案写成“鸡胸肉或牛肉末”，编造了资料中不存在的食材"),
-    "i12": ("correct", "答案写“100千卡”=100 calories，关键词表未收录该译法导致漏判"),
-    "i23": ("correct", "三文鱼/奶油奶酪等主料正确，caper 译为“腌渍凤尾鱼”属译法差异"),
-    "i24": ("hallucinated", "原文 ground turkey / meat of choice，答案写成“火腿肉”，引入资料外食材"),
+_OVERRIDES_BY_SET = {
+    "evals/cookbook/results.jsonl": {
+        "i03": ("correct", "内容正确（西葫芦/菠菜/奶酪齐全），仅 ricotta 译为“奶油奶酪”，属术语译法差异"),
+        "i04": ("wrong", "答案缺核心食材 egg white（蛋清），与题目所指菜品不符"),
+        "i08": ("hallucinated", "原文 ground turkey，答案写成“鸡胸肉或牛肉末”，编造了资料中不存在的食材"),
+        "i12": ("correct", "答案写“100千卡”=100 calories，关键词表未收录该译法导致漏判"),
+        "i23": ("correct", "三文鱼/奶油奶酪等主料正确，caper 译为“腌渍凤尾鱼”属译法差异"),
+        "i24": ("hallucinated", "原文 ground turkey / meat of choice，答案写成“火腿肉”，引入资料外食材"),
+    },
+    "evals/atomic/results.jsonl": {},   # 《原子习惯》独立复核表（下方按需补充）
 }
+OVERRIDES = _OVERRIDES_BY_SET.get(RESULTS, {})
 
 
 def judge(r):

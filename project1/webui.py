@@ -18,7 +18,39 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rag import load_kb, ask  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webui")
-CHUNKS, VECTORS = load_kb(verbose=False)
+_BASE = os.path.dirname(os.path.abspath(__file__))
+
+# ---------- 多语言知识库（拓展 E1：中英文教材并存，检索时自动切换）----------
+# 英文主线 = The Anabolic Cookbook 2.0；中文库 = 《原子习惯》（换书验证，独立构建）
+CHUNKS, VECTORS = load_kb(verbose=False)                 # 主线（英文）
+_zh_vec = os.path.join(_BASE, "evals", "atomic", "vectors.npy")
+_zh_ck = os.path.join(_BASE, "evals", "atomic", "chunks.json")
+if os.path.exists(_zh_ck) and os.path.exists(_zh_vec):
+    CHUNKS_ZH, VECTORS_ZH = load_kb(verbose=False, vectors_path=_zh_vec, chunks_path=_zh_ck)
+else:
+    CHUNKS_ZH, VECTORS_ZH = None, None
+
+LIBS = {
+    "en": {"name": "The Anabolic Cookbook 2.0（英文教材）", "chunks": CHUNKS,
+           "vectors": VECTORS, "lang": "en"},
+    "zh": {"name": "《原子习惯》（中文教材）", "chunks": CHUNKS_ZH,
+           "vectors": VECTORS_ZH, "lang": "zh"},
+}
+_CJK_RE_WEB = re.compile(r"[\u4e00-\u9fff]")
+
+
+def ask_routed(question, lib_key=None):
+    """多语言路由（E1）：中文问题 → 中文库原生检索；英文问题 → 英文库。
+    手动指定 lib_key 强制走该库（语言不一致时由 rag.translate_query 按 kb_lang
+    决定是否翻译——例如"中文问题 + 英文库"会触发查询翻译层）。"""
+    is_zh = bool(_CJK_RE_WEB.search(question))
+    auto_key = "zh" if (is_zh and LIBS["zh"]["chunks"] is not None) else "en"
+    key = lib_key if (lib_key in LIBS and LIBS[lib_key]["chunks"] is not None) else auto_key
+    lib = LIBS[key]
+    result = ask(question, lib["chunks"], lib["vectors"], kb_lang=lib["lang"])
+    result["kb"] = lib["name"]
+    result["route"] = (f"auto:{key}" if key == auto_key else f"manual:{key}")
+    return result
 
 
 def clean_snippet(text):
@@ -99,10 +131,13 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, json.dumps({"error": "webui/index.html 缺失"}))
                 return
             self._send(200, open(path, "rb").read(), "text/html; charset=utf-8")
-        elif self.path == "/api/info":           # 前端动态显示块数/向量维度
+        elif self.path == "/api/info":           # 前端动态显示块数/向量维度（双库）
             self._send(200, json.dumps({
                 "chunk_count": len(CHUNKS),
                 "vector_dim": VECTORS.shape[1] if VECTORS is not None else 0,
+                "libs": {k: {"name": v["name"],
+                             "chunks": len(v["chunks"]) if v["chunks"] else 0,
+                             "lang": v["lang"]} for k, v in LIBS.items()},
             }, ensure_ascii=False))
         elif self.path == "/handoff":            # 人工工作台：接 AI 答不上来的单
             path = os.path.join(ROOT, "handoff.html")
@@ -133,7 +168,8 @@ class Handler(BaseHTTPRequestHandler):
             if not question:
                 self._send(400, json.dumps({"error": "问题为空"}, ensure_ascii=False))
                 return
-            result = ask(question, CHUNKS, VECTORS)
+            lib_key = (payload.get("lib") or "").strip() or None   # 可选：手动指定库（不传=按语言自动路由）
+            result = ask_routed(question, lib_key)
             # 拒答 = 系统答不了 → 自动生成工单转人工（核心要求之一）
             if result.get("refused"):
                 result["ticket"] = self._new_ticket(question)

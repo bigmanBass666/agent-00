@@ -55,9 +55,10 @@ WORD_RE = re.compile(r"[a-z0-9]+")
 LEXICAL_PASS = 0.85      # 词汇信号放行线：reranker 低分但实词几乎全覆盖时仍交 LLM 判断
 
 
-def load_kb(verbose=True):
-    vectors = np.load(VECTORS_PATH)
-    with open(CHUNKS_PATH, encoding="utf-8") as f:
+def load_kb(verbose=True, vectors_path=None, chunks_path=None):
+    """加载知识库。默认走 config 的主线库；传路径可载入其他书（多库并存）"""
+    vectors = np.load(vectors_path or VECTORS_PATH)
+    with open(chunks_path or CHUNKS_PATH, encoding="utf-8") as f:
         chunks = json.load(f)
     if verbose:
         print(f"知识库已加载: {len(chunks)} 个分块, 向量矩阵 {vectors.shape}")
@@ -198,9 +199,14 @@ TRANSLATE_PROMPT = (
 )
 
 
-def translate_query(query, use_cache=True):
+def translate_query(query, use_cache=True, kb_lang=None):
     """中文问题 → 英文检索式。非中文直接返回原句。
+    kb_lang：目标知识库语言（'zh'/'en'）。多库路由时显式传入——不使用全局状态，
+    避免多线程 WebUI 下互相污染；缺省读环境变量 KB_LANG（评测多库并存时用）。
     任何异常都降级返回原句——本层的最坏情况等价于没有本层。"""
+    lang = (kb_lang or os.environ.get("KB_LANG", "en")).lower()
+    if lang == "zh":        # 中文知识库：原生直通，禁用翻译
+        return query
     if not _CJK_RE.search(query):
         return query
     if use_cache and query in _TRANSLATE_CACHE:
@@ -216,8 +222,8 @@ def translate_query(query, use_cache=True):
         return query
 
 
-def ask(query, chunks, vectors):
-    retrieval_query = translate_query(query)          # 检索走译文
+def ask(query, chunks, vectors, kb_lang=None):
+    retrieval_query = translate_query(query, kb_lang=kb_lang)   # 检索走译文
     if retrieval_query != query:
         print(f"  [翻译] {query} → {retrieval_query}", flush=True)
     retrieved, lex_best = retrieve(retrieval_query, chunks, vectors)

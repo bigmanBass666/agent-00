@@ -81,6 +81,13 @@
     font-size: 12.5px; color: #7a6d47;
   }
   .handoff b { font-family: ui-monospace, Menlo, monospace; color: #4a4326; font-weight: 600; }
+  .lib-pick { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .lib-pick select {
+    font: inherit; font-size: 12px; padding: 3px 6px;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer;
+  }
+  .route { font-style: normal; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+           color: var(--muted); border: 1px solid var(--line); padding: 1px 5px; margin-left: 4px; }
 
   .sources { margin-top: 30px; }
   .sources-title {
@@ -155,6 +162,13 @@
     <textarea id="q" rows="2" placeholder="输入问题，例如：How do I make protein French toast?"></textarea>
     <div class="bar">
       <span class="hint">Enter 发送 · Shift+Enter 换行</span>
+      <label class="lib-pick">知识库
+        <select id="lib">
+          <option value="">自动（按语言切换）</option>
+          <option value="en">Cookbook · 英文</option>
+          <option value="zh">原子习惯 · 中文</option>
+        </select>
+      </label>
       <button id="send">提问</button>
     </div>
   </div>
@@ -195,13 +209,14 @@ async function ask() {
     const r = await fetch('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question })
+      body: JSON.stringify({ question, lib: ($('lib') ? $('lib').value : '') })
     });
     const d = await r.json();
     if (d.error) throw new Error(d.error);
     const ms = Math.round(performance.now() - t0);
 
     $('meta').innerHTML =
+      `<span>知识库 <b>${esc(d.kb || '')}</b>${d.route ? ` <em class="route">${esc(d.route)}</em>` : ''}</span>` +
       `<span>检索分 <b>${(d.top_score ?? 0).toFixed(4)}</b></span>` +
       `<span>词汇分 <b>${(d.lex_best ?? 0).toFixed(2)}</b></span>` +
       `<span>耗时 <b>${ms} ms</b></span>`;
