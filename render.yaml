@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: kb-qa
+    runtime: python
+    plan: free
+    rootDir: project1
+    buildCommand: pip install -r requirements.txt
+    startCommand: python webui.py
+    envVars:
+      - key: SILICONFLOW_API_KEY
+        sync: false

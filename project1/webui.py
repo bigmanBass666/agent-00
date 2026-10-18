@@ -62,14 +62,17 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    # 云平台会注入 PORT；本地默认 8000
+    port = int(os.environ.get("PORT",
+                              sys.argv[1] if len(sys.argv) > 1 else 8000))
+    host = os.environ.get("HOST", "0.0.0.0")
     print("=" * 52)
     print("  知识库问答系统 · Web UI")
     print(f"  知识库: {len(CHUNKS)} 块")
-    print(f"  打开: http://127.0.0.1:{port}")
+    print(f"  监听: http://{host}:{port}")
     print("  Ctrl+C 退出")
     print("=" * 52)
-    ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()
+    ThreadingHTTPServer((host, port), Handler).serve_forever()
 
 
 if __name__ == "__main__":
