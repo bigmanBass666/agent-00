@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>查询翻译层</title>
+  <script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+  <link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+  <style>
+    body { margin:0; padding:0; display:flex; align-items:center; min-height:100vh; }
+    .slide { width:1280px; height:720px; margin:0 auto; flex-shrink:0; overflow:hidden; position:relative;
+             background:#faf9f7; font-family:"Noto Sans SC",sans-serif; }
+    h1,h2,h3 { font-family:"Noto Serif SC",serif; }
+    .mono { font-family:"JetBrains Mono","Space Mono",monospace; font-variant-numeric:tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="absolute left-16 top-12">
+      <p class="mono text-xs text-[#b0442e] tracking-[0.3em]">16 · QUERY TRANSLATION</p>
+      <h1 class="mt-3 text-[38px] font-semibold text-stone-900 leading-tight">
+        查询翻译层：一个"分数很高却答不出"的隐蔽失败
+      </h1>
+    </div>
+
+    <!-- 发现 -->
+    <div class="absolute left-16 right-16 top-[172px]">
+      <div class="grid grid-cols-3 gap-8">
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">现象</p>
+          <div class="mt-2 h-px bg-stone-300"></div>
+          <p class="mt-3 text-lg text-stone-700 leading-relaxed">
+            英文知识库 + 中文提问，课内题假拒答率
+            <span class="mono text-[#b0442e] text-2xl">25%</span>（英文基线 3%）
+          </p>
+        </div>
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">隐蔽点</p>
+          <div class="mt-2 h-px bg-stone-300"></div>
+          <p class="mt-3 text-lg text-stone-700 leading-relaxed">
+            <span class="mono">i03 怎么做高蛋白千层面</span> top=<span class="mono text-[#b0442e]">0.457</span> 已过阈值，
+            但检索到的是错的段落 → 模型只能拒答
+          </p>
+        </div>
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">业界依据</p>
+          <div class="mt-2 h-px bg-stone-300"></div>
+          <p class="mt-3 text-lg text-stone-700 leading-relaxed">
+            跨语言 RAG 三种主流范式之一（Translate-Query-Retrieve）；
+            中文工程实测：翻译枢纽后命中 71% → 80%
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 实现 -->
+    <div class="absolute left-16 right-16 top-[356px]">
+      <div class="bg-white border border-stone-300 px-8 py-6">
+        <div class="flex items-center gap-8">
+          <div class="flex-1">
+            <p class="mono text-xs text-stone-400 tracking-[0.25em]">实现</p>
+            <p class="mt-2 text-lg text-stone-800 leading-relaxed">
+              CJK 检测 → LLM 译成英文检索式 → 进程内缓存 →
+              <strong class="text-stone-900">三级降级</strong>（失败 / 超时 / 译文仍含中文都回原句）
+            </p>
+          </div>
+          <div class="w-px h-14 bg-stone-300"></div>
+          <div class="flex-1">
+            <p class="mono text-xs text-stone-400 tracking-[0.25em]">关键设计</p>
+            <p class="mt-2 text-lg text-stone-800 leading-relaxed">
+              <strong class="text-stone-900">检索用译文，生成仍用原始中文问题</strong>——回答语言、页码引用规则零影响
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果 -->
+    <div class="absolute left-16 right-16 top-[528px]">
+      <div class="grid grid-cols-4 gap-8">
+        <div class="border-t-2 border-[#b0442e] pt-4">
+          <p class="mono text-[32px] text-[#b0442e] leading-none">3 → 0</p>
+          <p class="mt-2 text-base text-stone-600 leading-snug">中文 12 题拒答数<br><span class="text-stone-400">假拒答 25% → 0%</span></p>
+        </div>
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[32px] text-stone-900 leading-none">3/3</p>
+          <p class="mt-2 text-base text-stone-600 leading-snug">隐蔽失败题全部救回<br><span class="text-stone-400">i03 / i04 / i07</span></p>
+        </div>
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[32px] text-stone-900 leading-none">0</p>
+          <p class="mt-2 text-base text-stone-600 leading-snug">英文路径触发次数<br><span class="text-stone-400">代码级零侵入</span></p>
+        </div>
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[32px] text-stone-900 leading-none">0</p>
+          <p class="mt-2 text-base text-stone-600 leading-snug">检索漂移 > 0.15 的题<br><span class="text-stone-400">检索层 100% 稳定</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

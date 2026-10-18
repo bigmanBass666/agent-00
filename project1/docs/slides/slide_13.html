@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>失败案例2</title>
+  <script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+  <link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+  <style>
+    body { margin:0; padding:0; display:flex; align-items:center; min-height:100vh; }
+    .slide { width:1280px; height:720px; margin:0 auto; flex-shrink:0; overflow:hidden; position:relative;
+             background:#faf9f7; font-family:"Noto Sans SC",sans-serif; }
+    h1,h2,h3 { font-family:"Noto Serif SC",serif; }
+    .mono { font-family:"JetBrains Mono","Space Mono",monospace; font-variant-numeric:tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="absolute left-16 top-14">
+      <p class="mono text-xs text-[#b0442e] tracking-[0.3em]">12 · FAILURE CASE 2</p>
+      <h1 class="mt-4 text-[42px] font-semibold text-stone-900 leading-tight">
+        失败案例：PDF 表格被压平，1 杯变成 16 汤匙
+      </h1>
+    </div>
+
+    <!-- 数字对比 -->
+    <div class="absolute left-16 right-16 top-[216px]">
+      <div class="grid grid-cols-3 gap-10 items-start">
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">题目</p>
+          <p class="mt-3 mono text-xl text-stone-900 leading-relaxed">How many tablespoons<br>are in one cup?</p>
+        </div>
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">错误答案</p>
+          <p class="mt-3 mono text-[40px] text-[#b0442e] leading-none">16 tbsp</p>
+          <p class="mt-2 text-base text-stone-500">系统答错，差一倍</p>
+        </div>
+        <div>
+          <p class="mono text-xs text-stone-400 tracking-[0.25em]">正确答案</p>
+          <p class="mt-3 mono text-[40px] text-stone-900 leading-none">8 tbsp</p>
+          <p class="mt-2 text-base text-stone-500">修复后稳定回答，附【教材 p.14】</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 根因 -->
+    <div class="absolute left-16 right-16 top-[388px]">
+      <div class="bg-white border border-stone-300 px-8 py-6">
+        <p class="mono text-xs text-stone-400 tracking-[0.25em]">根因：两列表被提取成一行连续文本</p>
+        <p class="mt-3 mono text-lg text-stone-700 leading-relaxed">
+          "3 tsp　1 tbsp　8 tbsp　1 cup　16 oz　1 lb"
+        </p>
+        <p class="mt-3 text-base text-stone-500 leading-relaxed">
+          行列关系丢失后，<span class="mono text-[#b0442e]">16 oz</span> 被错配给了 <span class="mono text-[#b0442e]">tbsp</span>——文字看着都对，答案错了
+        </p>
+      </div>
+    </div>
+
+    <!-- 修复 -->
+    <div class="absolute left-16 right-16 top-[572px]">
+      <div class="border-l-4 border-[#b0442e] pl-8">
+        <p class="text-xl text-stone-800 leading-relaxed">
+          修复：<span class="mono">page.find_tables()</span> 抽表 → 转成结构化句子
+          <span class="mono text-stone-900">"8 tbsp = 1 cup"</span> 单独成块；过滤噪音表只留 21 个真数据表。
+          <strong class="text-stone-900">页码定位 93.1% → 96.6%</strong>。
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

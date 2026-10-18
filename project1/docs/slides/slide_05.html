@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>知识库构建</title>
+  <script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+  <link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+  <style>
+    body { margin:0; padding:0; display:flex; align-items:center; min-height:100vh; }
+    .slide { width:1280px; height:720px; margin:0 auto; flex-shrink:0; overflow:hidden; position:relative;
+             background:#faf9f7; font-family:"Noto Sans SC",sans-serif; }
+    h1,h2,h3 { font-family:"Noto Serif SC",serif; }
+    .mono { font-family:"JetBrains Mono","Space Mono",monospace; font-variant-numeric:tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="absolute left-16 top-14">
+      <p class="mono text-xs text-[#b0442e] tracking-[0.3em]">04 · PHASE 1</p>
+      <h1 class="mt-4 text-[42px] font-semibold text-stone-900 leading-tight">
+        知识库构建：按书签章节切，不按字数硬切
+      </h1>
+    </div>
+
+    <!-- 数据块 -->
+    <div class="absolute left-16 top-[192px] right-16">
+      <div class="grid grid-cols-4 gap-8">
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[40px] text-stone-900 leading-none">205</p>
+          <p class="mt-2 text-base text-stone-500">页 PDF → 193 页有文字</p>
+        </div>
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[40px] text-stone-900 leading-none">159</p>
+          <p class="mt-2 text-base text-stone-500">个分块（正文 + 表格结构化）</p>
+        </div>
+        <div class="border-t-2 border-stone-800 pt-4">
+          <p class="mono text-[40px] text-stone-900 leading-none">142</p>
+          <p class="mt-2 text-base text-stone-500">个章节 · 87% 章节恰好一块</p>
+        </div>
+        <div class="border-t-2 border-[#b0442e] pt-4">
+          <p class="mono text-[40px] text-[#b0442e] leading-none">3/3</p>
+          <p class="mt-2 text-base text-stone-500">自检索验证全部命中</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 要点 -->
+    <div class="absolute left-16 right-16 top-[368px]">
+      <div class="grid grid-cols-2 gap-14">
+        <div>
+          <h3 class="text-2xl font-semibold text-stone-900">为什么按章节切</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <p class="mt-4 text-lg text-stone-600 leading-relaxed">
+            菜谱书"一菜一章"，<strong class="text-stone-900">配料和步骤不能分家</strong>。
+            章内超 3500 字符才二次切分，保留 300 字符重叠；每块记录 text / page_start / page_end / chapter 四字段。
+          </p>
+        </div>
+        <div>
+          <h3 class="text-2xl font-semibold text-stone-900">回应"800~1200 tokens"要求</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <p class="mt-4 text-lg text-stone-600 leading-relaxed">
+            A/B 实测：合并到 <span class="mono text-stone-900">864</span> tokens 后准确率
+            <span class="mono text-[#b0442e]">89.7% → 78.6%</span>、页码定位
+            <span class="mono text-[#b0442e]">93.1% → 85.7%</span>。
+            按文档"<strong class="text-stone-900">或等效粒度</strong>"条款保留章节切（天然单元 475 tokens）。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute left-16 right-16 bottom-12">
+      <div class="h-px bg-stone-300"></div>
+      <p class="mt-5 text-base text-stone-500">
+        校验脚本 validate_kb：块数与向量数一致 · 页码元数据完整 · 章节覆盖率 142/142
+      </p>
+    </div>
+  </div>
+</body>
+</html>

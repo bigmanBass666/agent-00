@@ -1,0 +1,30 @@
+{"id": "i01", "question": "英国自行车队的“边际收益的聚合”战略是谁提出的？核心理念是什么？", "expected": "answer", "type": "in_scope", "gold_pages": [16, 17], "gold_keywords": ["布雷斯福德|Brailsford", "1%|极细微"]}
+{"id": "i02", "question": "布雷斯福德接手五年后，英国自行车队在哪届奥运会上取得了突破？", "expected": "answer", "type": "in_scope", "gold_pages": [17], "gold_keywords": ["2008", "北京"]}
+{"id": "i03", "question": "行为改变的三个层次分别是什么？最深的层次是哪一层？", "expected": "answer", "type": "in_scope", "gold_pages": [33], "gold_keywords": ["结果", "过程", "身份"]}
+{"id": "i04", "question": "桑代克著名的拼图盒实验使用的是什么动物？", "expected": "answer", "type": "in_scope", "gold_pages": [45], "gold_keywords": ["猫"]}
+{"id": "i05", "question": "书中对“习惯”的定义是什么？", "expected": "answer", "type": "in_scope", "gold_pages": [46], "gold_keywords": ["重复", "自动化"]}
+{"id": "i06", "question": "桑代克如何描述导致动物学习的基本规律？", "expected": "answer", "type": "in_scope", "gold_pages": [46], "gold_keywords": ["满意", "重复"]}
+{"id": "i07", "question": "英国健身习惯研究中，为自己制定了明确时间地点计划的第三组，每周至少锻炼一次的比例是多少？", "expected": "answer", "type": "in_scope", "gold_pages": [67], "gold_keywords": ["91%"]}
+{"id": "i08", "question": "执行意图的标准格式是什么？", "expected": "answer", "type": "in_scope", "gold_pages": [68], "gold_keywords": ["当X情况出现时", "执行意图"]}
+{"id": "i09", "question": "医院自助餐厅环境改造研究中，三个月后苏打水销量下降了多少？瓶装水销量增长了多少？", "expected": "answer", "type": "in_scope", "gold_pages": [79], "gold_keywords": ["11.4", "25.8"]}
+{"id": "i10", "question": "“人们选择产品不是因为它们是什么，而是因为它们在哪里”，这句话想说明什么更重要？", "expected": "answer", "type": "in_scope", "gold_pages": [80], "gold_keywords": ["环境"]}
+{"id": "i11", "question": "越战海洛因成瘾研究中，回家的士兵一年内重新上瘾的比例是多少？", "expected": "answer", "type": "in_scope", "gold_pages": [89], "gold_keywords": ["5%"]}
+{"id": "i12", "question": "廷贝亨的雏鸥实验中，雏鸥疯狂啄击的目标是什么？", "expected": "answer", "type": "in_scope", "gold_pages": [95], "gold_keywords": ["红点|红斑"]}
+{"id": "i13", "question": "什么是“超常刺激”？请举例说明。", "expected": "answer", "type": "in_scope", "gold_pages": [96], "gold_keywords": ["超常刺激", "加强版现实"]}
+{"id": "i14", "question": "两分钟规则一章用哪位舞者的日常仪式做例子？她的仪式起点是什么动作？", "expected": "answer", "type": "in_scope", "gold_pages": [145], "gold_keywords": ["萨普|Tharp", "出租车"]}
+{"id": "i15", "question": "巴基斯坦卡拉奇的洗手研究，是用什么方法让居民真正养成洗手习惯的？", "expected": "answer", "type": "in_scope", "gold_pages": [164, 165], "gold_keywords": ["舒肤佳", "香皂"]}
+{"id": "i16", "question": "股票经纪人迪尔施米德用什么办法追踪自己每天打出的推销电话？", "expected": "answer", "type": "in_scope", "gold_pages": [175], "gold_keywords": ["曲别针", "120"]}
+{"id": "i17", "question": "第19章“金发女孩准则”是用谁的童年故事开篇的？", "expected": "answer", "type": "in_scope", "gold_pages": [204], "gold_keywords": ["迪士尼|Disney"]}
+{"id": "i18", "question": "书中说“习惯动作+刻意练习”等于什么？为什么作者认为习惯也有负面影响？", "expected": "answer", "type": "in_scope", "gold_pages": [212, 213], "gold_keywords": ["精通", "刻意练习"]}
+{"id": "o01", "question": "今天北京的天气怎么样？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "o02", "question": "如何用 Python 写一个爬虫程序？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "o03", "question": "地球到月球的距离大约是多少公里？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "o04", "question": "世界杯足球赛的历届冠军有哪些？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "o05", "question": "《原子习惯》这本书在亚马逊上的售价是多少？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "o06", "question": "鸡胸肉每100克含有多少克蛋白质？", "expected": "refuse", "type": "out_of_scope", "gold_pages": [], "gold_keywords": []}
+{"id": "a01", "question": "我应该每天几点起床才能养成好习惯？", "expected": "refuse", "type": "adversarial", "gold_pages": [], "gold_keywords": []}
+{"id": "a02", "question": "哪个品牌的牙膏最有助于养成刷牙习惯？", "expected": "refuse", "type": "adversarial", "gold_pages": [], "gold_keywords": []}
+{"id": "a03", "question": "原子习惯的方法能治好我的抑郁症吗？", "expected": "refuse", "type": "adversarial", "gold_pages": [], "gold_keywords": []}
+{"id": "v01", "question": "怎么改变自己？", "expected": "refuse", "type": "vague", "gold_pages": [], "gold_keywords": []}
+{"id": "v02", "question": "我该如何安排我的一天？", "expected": "refuse", "type": "vague", "gold_pages": [], "gold_keywords": []}
+{"id": "v03", "question": "如何才能成功？", "expected": "refuse", "type": "vague", "gold_pages": [], "gold_keywords": []}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>工程规范</title>
+  <script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+  <link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+  <style>
+    body { margin:0; padding:0; display:flex; align-items:center; min-height:100vh; }
+    .slide { width:1280px; height:720px; margin:0 auto; flex-shrink:0; overflow:hidden; position:relative;
+             background:#faf9f7; font-family:"Noto Sans SC",sans-serif; }
+    h1,h2,h3 { font-family:"Noto Serif SC",serif; }
+    .mono { font-family:"JetBrains Mono","Space Mono",monospace; font-variant-numeric:tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="absolute left-16 top-14">
+      <p class="mono text-xs text-[#b0442e] tracking-[0.3em]">14 · ENGINEERING</p>
+      <h1 class="mt-4 text-[42px] font-semibold text-stone-900 leading-tight">
+        工程规范：换一本书，只改一行配置
+      </h1>
+    </div>
+
+    <!-- 模块 -->
+    <div class="absolute left-16 right-16 top-[212px]">
+      <p class="mono text-xs text-stone-400 tracking-[0.25em]">模块划分（每个环节可独立验证）</p>
+      <div class="mt-4 grid grid-cols-4 gap-4">
+        <div class="bg-white border border-stone-300 px-5 py-4">
+          <p class="mono text-base text-stone-900">config.py</p>
+          <p class="mt-1 text-sm text-stone-500">阈值 / 模型 / 路径</p>
+        </div>
+        <div class="bg-white border border-stone-300 px-5 py-4">
+          <p class="mono text-base text-stone-900">build_kb.py</p>
+          <p class="mt-1 text-sm text-stone-500">提取 / 分块 / 向量化</p>
+        </div>
+        <div class="bg-white border border-stone-300 px-5 py-4">
+          <p class="mono text-base text-stone-900">rag.py</p>
+          <p class="mt-1 text-sm text-stone-500">翻译 / 检索 / 生成</p>
+        </div>
+        <div class="bg-white border border-stone-300 px-5 py-4">
+          <p class="mono text-base text-stone-900">run_eval_v2.py</p>
+          <p class="mt-1 text-sm text-stone-500">评测 / 判定 / 统计</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 要点 -->
+    <div class="absolute left-16 right-16 top-[396px]">
+      <div class="grid grid-cols-2 gap-12">
+        <div>
+          <h3 class="text-xl font-semibold text-stone-900">换书流程（3 步）</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <p class="mt-4 mono text-base text-stone-700 leading-loose">
+            BOOK_PATH=新书.pdf python build_kb.py<br>
+            → validate_kb.py 校验<br>
+            → run_eval_v2.py 跑评测
+          </p>
+          <p class="mt-3 text-base text-stone-500">多书并存用 KB_VECTORS / KB_CHUNKS 环境变量隔离，互不覆盖</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-stone-900">交付物与安全</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <ul class="mt-4 text-base text-stone-600 space-y-2 leading-relaxed">
+            <li>提示词独立成文件（prompt/system_prompt.txt），可单独评审</li>
+            <li>API Key 走 .env，已被 gitignore，仓库无明文</li>
+            <li>代码注释 + README + 一键流程：build → validate → eval → judge</li>
+            <li>支持云部署（Procfile），答辩可现场跑</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute left-16 right-16 bottom-12">
+      <div class="h-px bg-stone-300"></div>
+      <p class="mt-5 text-lg text-stone-700">
+        管线与教材解耦：<strong class="text-stone-900">已在 2 本书上验证</strong>（英文 Cookbook 205 页 / 中文《原子习惯》286 页）
+      </p>
+    </div>
+  </div>
+</body>
+</html>

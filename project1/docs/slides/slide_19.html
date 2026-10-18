@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>不足与下一步</title>
+  <script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+  <link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+  <style>
+    body { margin:0; padding:0; display:flex; align-items:center; min-height:100vh; }
+    .slide { width:1280px; height:720px; margin:0 auto; flex-shrink:0; overflow:hidden; position:relative;
+             background:#faf9f7; font-family:"Noto Sans SC",sans-serif; }
+    h1,h2,h3 { font-family:"Noto Serif SC",serif; }
+    .mono { font-family:"JetBrains Mono","Space Mono",monospace; font-variant-numeric:tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="absolute left-16 top-14">
+      <p class="mono text-xs text-[#b0442e] tracking-[0.3em]">18 · LIMITATIONS</p>
+      <h1 class="mt-4 text-[42px] font-semibold text-stone-900 leading-tight">
+        不足与下一步：包括一次被自己推翻的优化
+      </h1>
+    </div>
+
+    <!-- 已知限制 -->
+    <div class="absolute left-16 right-16 top-[212px]">
+      <div class="grid grid-cols-2 gap-12">
+        <div>
+          <h3 class="text-2xl font-semibold text-stone-900">已知限制（诚实披露）</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <ul class="mt-4 text-lg text-stone-600 space-y-3 leading-relaxed">
+            <li>评测存在 <strong class="text-stone-900">±4pp 生成方差</strong>（temperature 0.3 对边界题的拒答判断非确定性），已归因到检索层零漂移</li>
+            <li>抽象定义题（"习惯的定义"）提问与原文表述差异大 → 向量分 0.236 未过线，记为<strong class="text-stone-900">边界案例</strong></li>
+            <li>营养表"每份 / 整批"口径仍有歧义</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-2xl font-semibold text-stone-900">P1~P3 待办</h3>
+          <div class="mt-3 h-px bg-stone-300"></div>
+          <ul class="mt-4 text-lg text-stone-600 space-y-3 leading-relaxed">
+            <li><span class="mono text-[#b0442e]">P1</span>　生成后实体校验（拦"换食材"类幻觉，见失败案例 1）</li>
+            <li><span class="mono text-[#b0442e]">P2</span>　词形还原（救 i18 类误拒）</li>
+            <li><span class="mono text-[#b0442e]">P3</span>　模糊问题指代检测（救 v03）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 自我推翻 -->
+    <div class="absolute left-16 right-16 top-[476px]">
+      <div class="bg-white border border-stone-300 px-8 py-6">
+        <p class="mono text-xs text-stone-400 tracking-[0.25em]">一次优化的自我回退（完整记录在 docs/决策日志.md）</p>
+        <p class="mt-3 text-lg text-stone-700 leading-relaxed">
+          为救上述定义题，给词法层加了中文 2-gram 召回——实测整体指标<strong class="text-stone-900">反降</strong>
+          （90.0% → 86.7%，页码 100% → 94.1%），而目标题<strong class="text-stone-900">仍未救回</strong>。
+          → <span class="text-[#b0442e] font-medium">立即回退</span>，不为救 1 题引入结构性风险。
+        </p>
+      </div>
+    </div>
+
+    <div class="absolute left-16 right-16 bottom-12">
+      <div class="h-px bg-stone-300"></div>
+      <p class="mt-5 text-lg text-stone-700">
+        扫描版教材 OCR：<strong class="text-stone-900">明确否决</strong>（531 页 70 分钟 + 错字污染检索——为验证先把数据搞脏，本末倒置）
+      </p>
+    </div>
+  </div>
+</body>
+</html>
