@@ -92,8 +92,14 @@
              display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
              overflow: hidden; }
 
-  .loading { display: none; font-size: 13px; color: var(--muted); padding: 8px 0 20px; }
-  .loading.show { display: block; }
+  .loading { display: none; font-size: 13px; color: var(--muted); padding: 8px 0 20px;
+             align-items: center; gap: 10px; }
+  .loading.show { display: flex; }
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid #ddd; border-top-color: var(--ink);
+    border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .err { color: #b91c1c; font-size: 13px; padding: 12px 0; }
 
   footer { margin-top: 56px; font-size: 11.5px; color: #a0a0a0; line-height: 1.9; }
@@ -105,7 +111,7 @@
   <header>
     <h1>知识库问答系统</h1>
     <div class="sub">
-      <span class="dot"></span>基于 The Anabolic Cookbook 2.0 · 180 个知识块<br>
+      <span class="dot"></span>基于 The Anabolic Cookbook 2.0 · <span id="kb-count">…</span> 个知识块<br>
       只回答本书内容，每个事实附页码；书中没有的会明确告知未找到。
     </div>
   </header>
@@ -118,7 +124,7 @@
     </div>
   </div>
 
-  <div class="loading" id="loading">检索知识库中…</div>
+  <div class="loading" id="loading"><div class="spinner"></div>检索知识库中…</div>
   <div class="answer" id="ans">
     <div class="meta" id="meta"></div>
     <div id="body"></div>
@@ -208,6 +214,12 @@ sendBtn.addEventListener('click', ask);
 qEl.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); }
 });
+
+// 动态加载知识库块数
+fetch('/api/info').then(r => r.json()).then(d => {
+  if (d.chunk_count) $('kb-count').textContent = d.chunk_count;
+}).catch(() => {});
+
 qEl.focus();
 </script>
 </body>

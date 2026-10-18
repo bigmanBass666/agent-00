@@ -9,6 +9,7 @@ Web UI（交付物 2 的可视化封装 / 拓展挑战：可视化界面）
 """
 import json
 import os
+import re
 import sys
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,6 +19,22 @@ from rag import load_kb, ask  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webui")
 CHUNKS, VECTORS = load_kb(verbose=False)
+
+
+def clean_snippet(text):
+    """去除 PDF 提取噪音：页码+书名连写、全大写页眉等"""
+    if not text:
+        return text
+    # 格式1: 字母间带空格的页眉，如 "T H E U L T I M A T E ... 2 . 0"
+    # 只匹配"单字符+空白"的重复模式，遇到正常单词（大写后接小写）自动停止
+    text = re.sub(r"\d*\s*(?:[A-Z]\s+){6,}(?:[A-Z0-9]\s+|\.\s+)*", " ", text)
+    # 格式2: 页码+全大写无空格连写，如 "37THEULTIMATEANABOLICCOOKBOOK2.0"
+    text = re.sub(r"\d+[A-Z]{8,}[A-Z0-9.]*", " ", text)
+    # 格式3: 独立全大写连写串（8+ 大写字母）
+    text = re.sub(r"(?<![A-Z])[A-Z]{8,}(?![A-Z])", " ", text)
+    # 清理多余空白
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -36,6 +53,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, json.dumps({"error": "webui/index.html 缺失"}))
                 return
             self._send(200, open(path, "rb").read(), "text/html; charset=utf-8")
+        elif self.path == "/api/info":
+            self._send(200, json.dumps({
+                "chunk_count": len(CHUNKS),
+                "vector_dim": VECTORS.shape[1] if VECTORS is not None else 0,
+            }, ensure_ascii=False))
         else:
             self._send(404, json.dumps({"error": "not found"}))
 
@@ -53,6 +75,9 @@ class Handler(BaseHTTPRequestHandler):
             result = ask(question, CHUNKS, VECTORS)
             # context 体积大，不回传给前端
             result.pop("context", None)
+            # 清洗来源片段中的 PDF 提取噪音
+            for hit in result.get("hits", []):
+                hit["snippet"] = clean_snippet(hit.get("snippet", ""))
             self._send(200, json.dumps(result, ensure_ascii=False))
         except Exception as e:  # noqa: BLE001
             self._send(500, json.dumps({"error": str(e)}, ensure_ascii=False))
