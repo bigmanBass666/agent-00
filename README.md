@@ -1,78 +1,90 @@
 # agent-00 · 课程项目仓库
 
-《专业素养培养》课程项目仓库。当前进行项目一：课程知识问答智能体（RAG）。
+《专业素养培养》课程项目仓库。当前进行**项目一：课程知识问答智能体（RAG）**。
 
-## 项目一：课程知识问答智能体（RAG）
+## 一句话
 
-基于《操作系统》课程资料的问答智能体，支持资料内问答 + 库外问题拒答。
+基于指定课程教材 PDF 构建知识库，实现**带页码引用**的问答：只查教材、逐句给出处、检索不到如实说明、答不上自动转人工。
 
-### 技术栈
-- **Embedding**：BAAI/bge-m3（1024 维，SiliconFlow 免费）
-- **精排**：BAAI/bge-reranker-v2-m3（SiliconFlow 免费）
-- **LLM**：Qwen/Qwen3-8B（SiliconFlow 免费，需实名认证）
-- **检索架构**：两段式 + 混合召回 —— embedding 余弦 + IDF 词汇召回各 top-20 → reranker 精排 top-3
-- **拒答机制**：三层 —— 阈值（reranker < 0.3 且词汇分 < 0.85）+ 词汇放行通道 + LLM 层判断
+## 文档导航（找什么看这里）
 
-### 环境要求
-- Python 3.8+
-- 依赖：`requests`、`numpy`、`PyMuPDF`
+| 要找什么 | 去哪 |
+|---|---|
+| **条款对照 / 状态 / 待办 / 指标口径** | [`REQUIREMENTS.md`](REQUIREMENTS.md)（唯一执行基准） |
+| 设计依据（分块/Prompt/拒答/教材与技术栈归类） | `project1/设计文档.md` |
+| 决策过程与自我推翻（时间线留痕） | `project1/docs/决策日志.md` |
+| 会议决策 / 分工 / 风险 | `minutes/2026-09-20.md` `2026-10-12.md` `2026-10-18.md` |
+| 测试报告与失败案例 | `project1/docs/测试报告.md` |
+| 答辩演示与问答库 | `project1/docs/答辩演示脚本.md` |
+| 老师发放材料（原件，只读） | `materials/` |
 
-### 快速开始
+## 技术栈
+
+| 组件 | 选型 | 说明 |
+|---|---|---|
+| Embedding | `BAAI/bge-m3`（1024 维） | 多语言，建库与查询同源（向量空间一致） |
+| 精排 | `BAAI/bge-reranker-v2-m3` | cross-encoder，40 候选 → 3 |
+| LLM | `Qwen/Qwen3-8B` | 生成用，不参与向量计算（标准 RAG 架构） |
+| 接口 | SiliconFlow 免费层 | key 走 `.env`，不入库 |
+| 检索 | 两段式 + 混合召回 | 余弦 top-20 + IDF 词汇 top-20 → reranker 精排 |
+| 拒答 | 双层 | 阈值（reranker < 0.3 且词汇 < 0.85）+ LLM 判断 |
+| 转人工 | 自动工单 | 拒答 → tickets.jsonl → `/handoff` 工作台 |
+
+## 快速开始
+
 ```bash
 pip install requests numpy pymupdf
 cd project1
 echo "SILICONFLOW_API_KEY=你的key" > .env
-python build_kb.py            # 建知识库（PDF → 159 块 → 向量化）
-python validate_kb.py         # 校验
-python rag.py                 # 端到端问答演示（4 道题 + 检索工具演示）
-python run_eval_v2.py --fresh # 完整评测（50 题）
-python judge_results.py       # 逐条判定（correct/wrong/hallucinated/refuse_*）
-cd ../evals/project1 && python eval_stats.py   # 课程口径统计
+
+python build_kb.py            # PDF → 分块 → 向量化
+python validate_kb.py         # 知识库校验
+python rag.py                 # 端到端问答演示
+python webui.py               # Web UI（http://127.0.0.1:8000，含 /handoff）
+python run_eval_v2.py --fresh # 完整评测
+
+# 评审 30 秒验证（无需 API key、无需教材 PDF）
+python demo_offline.py        # 4 类典型样本 + 判定分布
 ```
 
-### 目录结构
+换教材：`BOOK_PATH=新书.pdf python build_kb.py`（支持 `.pdf`/`.epub`，多书并存用 `KB_VECTORS`/`KB_CHUNKS` 环境变量隔离）。
+
+## 目录结构
+
 ```
 agent-00/
-├── materials/                      # 课程发放材料（含 16_分组作业_v2_正式版.md）
-├── evals/project1/                 # 评测数据（课程脚手架要求的落点）
-│   ├── eval_set.jsonl              # 50 条评测集
-│   ├── results.jsonl               # 逐条结果 + result 判定
-│   ├── holdout.jsonl               # 5 条答辩现场抽问题
-│   └── eval_stats.py               # 课程指定统计脚本
+├── README.md                  ← 本文件（导航）
+├── REQUIREMENTS.md            ← 唯一执行基准（条款对照/状态/口径）
+├── materials/                 ← 老师发放材料（10 份，只读）
+├── minutes/                   ← 会议纪要（合规要求，每课一份）
+├── evals/project1/            ← 评测数据落点（课程脚手架要求）
+│   ├── eval_set.jsonl         # 50 条评测集（60/20/10/10）
+│   ├── results.jsonl          # 逐条结果 + 五类判定
+│   ├── holdout.jsonl          # 5 条答辩现场抽问题
+│   ├── eval_stats.py          # 课程指定统计脚本（对外指标口径）
+│   └── summary.md
 └── project1/
-    ├── config.py                   # 全局配置
-    ├── build_kb.py                 # 知识库构建
-    ├── rag.py                      # 问答系统 + knowledge_search 工具
-    ├── validate_kb.py              # 知识库校验
-    ├── run_eval_v2.py              # 自动化评测
-    ├── judge_results.py            # 逐条判定（含人工复核表）
-    ├── calibrate_threshold.py      # 阈值校准
-    ├── 设计文档.md                  # 设计与复盘
-    ├── prompt/system_prompt.txt    # 系统提示词（独立交付物）
+    ├── config.py / build_kb.py / rag.py / validate_kb.py
+    ├── run_eval_v2.py / judge_results.py / calibrate_threshold.py
+    ├── demo_offline.py        # 零依赖验证入口
+    ├── webui.py               # Web UI + 人工工作台
+    ├── 设计文档.md             # 分块策略 / Prompt / 拒答机制 / 失败案例 / 归类说明
+    ├── prompt/system_prompt.txt   # 系统提示词（交付物 3）
     ├── docs/
-    │   ├── 测试报告.md / .docx      # 测试报告（DOCX 交付）
-    │   ├── 提示词设计说明.md         # 提示词 rationale
-    │   ├── 小组分工说明.md / .docx   # 分工说明（DOCX 交付）
-    │   └── PPT大纲.md / .pptx       # 实施过程 PPT
-    └── evals/cookbook/             # 评测快照与 A/B 记录
+    │   ├── 测试报告.md          # 交付物 5（定稿后转 Office）
+    │   ├── 提示词设计说明.md     # 提示词 rationale
+    │   ├── 小组分工说明.md       # 交付物 7（定稿后转 Office）
+    │   ├── PPT大纲.md          # 交付物 6（定稿后转 PPTX）
+    │   ├── 对比实验_混合召回.md  # A/B 记录
+    │   ├── 对比实验_分块粒度.md  # A/B 记录
+    │   ├── 决策日志.md          # 决策与自我推翻（时间线）
+    │   └── 答辩演示脚本.md       # 演示脚本 + Q&A 库
+    ├── evals/cookbook/        # 主线评测快照与 A/B 结果
+    └── evals/atomic/          # 换书验证（《原子习惯》中文库）
 ```
 
-### 交付物（对齐 v2 作业文档 7 项）
-| # | 交付物 | 文件 |
-|---|--------|------|
-| 1 | 知识库 + 构建脚本 | `kb_chunks.json` + `kb_vectors.npy` + `build_kb.py` |
-| 2 | 检索工具 | `rag.py` 的 `knowledge_search()` |
-| 3 | 系统提示词 | `prompt/system_prompt.txt` + `docs/提示词设计说明.md` |
-| 4 | 智能体配置 | `config.py` + README |
-| 5 | 测试报告（DOCX） | `docs/测试报告.docx` |
-| 6 | 实施 PPT（PPTX） | `docs/智能问答系统_实施过程.pptx`（大纲已定稿，PPTX 待生成） |
-| 7 | 小组分工说明（DOCX） | `docs/小组分工说明.docx` |
+## 交付物与指标
 
-### 实测指标（50 题，严格口径，2026-10-18）
-- 准确率：**89.7%**（26/29，达标线 ≥70%）
-- 拒答正确率：**90.5%**（19/21，达标线 ≥70%）
-- 课内题回答率：96.7%（29/30）
-- 页码引用覆盖率：**100%**（29/29），页码定位 96.6%
-- 幻觉条数：2（达标线 <3）
-- 四轮迭代：87.5% → 87.5% → 93.8% → 90.5%（口径不同，详见设计文档）
-- 已完成拓展挑战 3 项：混合检索、cross-encoder 重排序、两组对比实验
+全部见 [`REQUIREMENTS.md`](REQUIREMENTS.md)（含任务书三件套、v2 七项交付物、两套评分口径、过关硬性条件）。
+
+> **指标口径提醒**：对外（报告/PPT/答辩）一律用课程口径 `evals/project1/eval_stats.py` 的数字；`run_eval_v2.py` 的自动口径仅供内部迭代参考，两者不要混用。
