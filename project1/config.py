@@ -11,15 +11,18 @@
 import os
 
 # ---------------------------------------------------------------
-# 教材路径（换教材只改这里）
+# 教材路径（换教材只改这里；也支持 .epub）
+# 用环境变量可让多本书的知识库并存（评测多书时绝不互相覆盖）：
+#   BOOK_PATH=evals/econ/book.epub KB_VECTORS=evals/econ/vectors.npy \
+#   KB_CHUNKS=evals/econ/chunks.json python build_kb.py
 # ---------------------------------------------------------------
-PDF_PATH = "textbook.pdf"
+PDF_PATH = os.environ.get("BOOK_PATH", "textbook.pdf")
 
 # ---------------------------------------------------------------
-# 知识库输出路径
+# 知识库输出路径（环境变量可覆盖，默认值不变）
 # ---------------------------------------------------------------
-VECTORS_PATH = "kb_vectors.npy"
-CHUNKS_PATH = "kb_chunks.json"
+VECTORS_PATH = os.environ.get("KB_VECTORS", "kb_vectors.npy")
+CHUNKS_PATH = os.environ.get("KB_CHUNKS", "kb_chunks.json")
 
 # ---------------------------------------------------------------
 # 分块参数

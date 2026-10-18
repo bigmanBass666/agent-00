@@ -15,8 +15,12 @@ from difflib import SequenceMatcher
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rag import load_kb, ask, REFUSE_SENTENCE
 
-EVAL_SET = "evals/cookbook/eval_set.jsonl"
-RESULTS_PATH = "evals/cookbook/results.jsonl"
+# 换书评测：环境变量指定新题集/结果路径，默认仍为主线 Cookbook
+#   EVAL_SET=evals/econ/eval_set.jsonl EVAL_RESULTS=evals/econ/results.jsonl \
+#   KB_VECTORS=evals/econ/vectors.npy KB_CHUNKS=evals/econ/chunks.json \
+#   python run_eval_v2.py --fresh
+EVAL_SET = os.environ.get("EVAL_SET", "evals/cookbook/eval_set.jsonl")
+RESULTS_PATH = os.environ.get("EVAL_RESULTS", "evals/cookbook/results.jsonl")
 
 CITATION_RE = re.compile(r"p\.(\d+)(?:\s*[-–~]\s*(\d+))?")
 

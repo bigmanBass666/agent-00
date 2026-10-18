@@ -164,17 +164,27 @@ def embed_batch(texts):
 
 
 if __name__ == "__main__":
+    import sys
     print("=" * 55)
-    print(f"Step 1: 提取 PDF 页面文字 ({PDF_PATH})...")
-    pages = extract_pages(PDF_PATH)
+    book = PDF_PATH
+    is_epub = book.lower().endswith(".epub")
+    if is_epub:
+        # EPUB 入口：与 PDF 出同构的 [{page,text,chapter}]，后续分块完全复用
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+        from epub_to_pages import epub_to_pages  # noqa: E402
+        print(f"Step 1: 解析 EPUB（{book}，页码按固定长度折算）...")
+        pages = epub_to_pages(book)
+    else:
+        print(f"Step 1: 提取 PDF 页面文字 ({book})...")
+        pages = extract_pages(book)
     text_pages = [p for p in pages if p["text"]]
     print(f"  共 {len(pages)} 页，其中 {len(text_pages)} 页有文字")
 
     print("\nStep 2: 分块...")
     chunks = build_chunks(pages)
     print(f"  正文分块: {len(chunks)} 块")
-    if os.environ.get("USE_TABLE_CHUNKS", "1") != "0":
-        table_chunks = extract_table_chunks(PDF_PATH)
+    if not is_epub and os.environ.get("USE_TABLE_CHUNKS", "1") != "0":
+        table_chunks = extract_table_chunks(book)
         print(f"  表格结构化: {len(table_chunks)} 个表格块（解决表格压平问题）")
         chunks = chunks + table_chunks
         chunks.sort(key=lambda c: (c["page_start"], 0 if "表格" not in c["chapter"] else 1))
