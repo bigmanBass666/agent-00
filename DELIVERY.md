@@ -32,6 +32,15 @@ python demo_offline.py
 
 输出 50 条真实运行留痕中的 4 类典型样本（课内答对 / 课外拒答 / 诱导拒答 / 失败案例），并给出判定分布。
 
+## 二之二、可视化界面（需要 API key）
+
+```bash
+cd project1
+python webui.py          # 浏览器打开 http://127.0.0.1:8000
+```
+
+单页界面：提问 → 回答 → 下方展示"引用了哪几个知识块"（页码、章节、reranker 分数、原文片段）。零依赖，只用 Python 内置 `http.server`。
+
 ---
 
 ## 三、完整复现（需要 API key + 教材 PDF）

@@ -186,7 +186,7 @@ def ask(query, chunks, vectors):
     if top_score < REFUSE_THRESHOLD and lex_best < LEXICAL_PASS:
         return {"answer": REFUSE_SENTENCE, "refused": True,
                 "top_score": top_score, "lex_best": lex_best,
-                "sources": [], "context": ""}
+                "sources": [], "hits": [], "context": ""}
 
     context_parts = []
     for chunk, score in retrieved:
@@ -205,6 +205,11 @@ def ask(query, chunks, vectors):
     return {"answer": answer, "refused": refused, "top_score": top_score,
             "lex_best": lex_best,
             "sources": [(c["page_start"], c["page_end"], c["chapter"]) for c, _ in retrieved],
+            "hits": [{
+                "page_start": c["page_start"], "page_end": c["page_end"],
+                "chapter": c["chapter"], "score": round(float(s), 4),
+                "snippet": c["text"][:320],
+            } for c, s in retrieved],
             "context": context}
 
 
