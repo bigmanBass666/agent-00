@@ -7,6 +7,7 @@
 用法: python build_kb.py
 """
 import re
+import os
 import json
 import requests
 import numpy as np
@@ -88,6 +89,66 @@ def _make_chunk(text, page_start, page_end, chapter):
     return {"text": text, "page_start": page_start, "page_end": page_end, "chapter": chapter}
 
 
+def extract_table_chunks(pdf_path):
+    """把 PDF 表格抽成结构化句子块（解决 get_text() 把表格压平、行列关系丢失的问题）
+
+    转换规则：
+      - 2 列表     → "A = B"（单位换算表）
+      - 首列为 Page → "菜名 (p.XX): 列=值, ..."（营养数据表）
+      - 其他       → "名称: 列=值, ..."（蔬果份量表）
+    """
+    doc = fitz.open(pdf_path)
+    out = []
+    for pno in range(1, len(doc) + 1):
+        page = doc[pno - 1]
+        try:
+            tabs = page.find_tables()
+        except Exception:
+            continue
+        for t in tabs.tables:
+            rows = [[("" if c is None else str(c).replace("\n", " ").strip()) for c in r]
+                    for r in t.extract()]
+            if len(rows) < 2:
+                continue
+            header = rows[0]
+            # 过滤低价值元信息表（准备时间/难度/素食标记），只保留真正的数据表
+            h0 = re.sub(r"\s+", "", header[0]).upper() if header else ""
+            if "PREPTIME" in h0 or "DIFFICULTY" in h0:
+                continue
+            lines = []
+            if len(header) == 2:
+                for r in rows[1:]:
+                    if r[0] and r[1]:
+                        lines.append(f"{r[0]} = {r[1]}")
+                title = f"【换算/对照表 p.{pno}｜{header[0]} / {header[1]}】"
+            elif header and header[0].lower() == "page" and len(header) >= 3:
+                for r in rows[1:]:
+                    if not any(r):
+                        continue
+                    name = r[1] if len(r) > 1 else r[0]
+                    pairs = [f"{h}={v}" for h, v in zip(header[2:], r[2:]) if v]
+                    if pairs:
+                        lines.append(f"{name} (p.{r[0]}): " + ", ".join(pairs))
+                title = f"【营养数据表 p.{pno}｜列：{' / '.join(header)}】"
+            else:
+                for r in rows[1:]:
+                    if not any(r):
+                        continue
+                    pairs = [f"{h}={v}" for h, v in zip(header[1:], r[1:]) if v]
+                    if pairs:
+                        lines.append(f"{r[0]}: " + ", ".join(pairs))
+                title = f"【数据表 p.{pno}｜列：{' / '.join(header)}】"
+            if not lines:
+                continue
+            out.append({
+                "text": title + "\n" + "\n".join(lines),
+                "page_start": pno, "page_end": pno,
+                "chapter": f"表格数据 - {header[0]}",
+            })
+    doc.close()
+    return out
+
+
 def embed_batch(texts):
     """批量向量化（bge-m3）"""
     all_vecs = []
@@ -111,6 +172,14 @@ if __name__ == "__main__":
 
     print("\nStep 2: 分块...")
     chunks = build_chunks(pages)
+    print(f"  正文分块: {len(chunks)} 块")
+    if os.environ.get("USE_TABLE_CHUNKS", "1") != "0":
+        table_chunks = extract_table_chunks(PDF_PATH)
+        print(f"  表格结构化: {len(table_chunks)} 个表格块（解决表格压平问题）")
+        chunks = chunks + table_chunks
+        chunks.sort(key=lambda c: (c["page_start"], 0 if "表格" not in c["chapter"] else 1))
+        for i, c in enumerate(chunks):
+            c["chunk_id"] = i
     print(f"  共 {len(chunks)} 个分块")
     chapters = set(c["chapter"] for c in chunks)
     print(f"  覆盖 {len(chapters)} 个章节")
