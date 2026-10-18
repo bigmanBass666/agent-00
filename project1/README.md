@@ -22,7 +22,7 @@
 
 ## 环境要求
 
-- Python 3.8+
+- Python 3.10+（实测 3.12）
 - 依赖：`requests`、`numpy`、`PyMuPDF`（fitz）
 
 ```bash
