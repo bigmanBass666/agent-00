@@ -27,6 +27,9 @@ CHUNKS_PATH = "kb_chunks.json"
 CHUNK_CHARS = 3500       # 每块约 3500 英文字符 ≈ 800-1000 tokens
 CHUNK_OVERLAP = 300      # 块间重叠字符
 MIN_CHUNK_CHARS = 200    # 过短的块合并到前一块
+CHUNK_TARGET_MIN = int(os.environ.get("CHUNK_TARGET_MIN", "200"))
+# 章节切换时的最小块长阈值：默认 200（章节优先，一菜一块）；
+# 设为 3200 则跨章节合并，逼近 800 tokens/块（对比实验用）
 
 # ---------------------------------------------------------------
 # 检索参数

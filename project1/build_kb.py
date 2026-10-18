@@ -13,7 +13,7 @@ import numpy as np
 import fitz  # PyMuPDF
 from config import (
     PDF_PATH, VECTORS_PATH, CHUNKS_PATH,
-    CHUNK_CHARS, CHUNK_OVERLAP, MIN_CHUNK_CHARS,
+    CHUNK_CHARS, CHUNK_OVERLAP, MIN_CHUNK_CHARS, CHUNK_TARGET_MIN,
     EMBED_URL, EMBED_MODEL, BATCH_SIZE, TIMEOUT, HEADERS,
 )
 
@@ -55,7 +55,7 @@ def build_chunks(pages):
             current_start_page = p["page"]
             current_chapter = p["chapter"]
 
-        if current_chapter != p["chapter"] and len(current_text) > MIN_CHUNK_CHARS:
+        if current_chapter != p["chapter"] and len(current_text) >= CHUNK_TARGET_MIN:
             chunks.append(_make_chunk(current_text, current_start_page, p["page"] - 1, current_chapter))
             current_text = ""
             current_start_page = p["page"]
