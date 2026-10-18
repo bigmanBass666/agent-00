@@ -178,8 +178,49 @@ def knowledge_search(query, top_k=None):
     return out
 
 
+# -----------------------------------------------------------------
+# 查询翻译层（跨语言 RAG · 业界主流范式 Translate-Query-Retrieve）
+# 背景：知识库是英文教材，中文提问时——
+#   词汇召回（IDF，[a-z0-9]+）对中文完全失效；多语言 embedding 的跨语言
+#   排序存在噪声，实测中文 in_scope 假拒答率 25%（英文基线 3%）。
+# 做法：中文问题先译成英文，用英文走完整的 dense + lexical + rerank 检索；
+#       生成阶段仍用用户的原始中文问题，回答语言不受影响。
+# 降级：翻译失败 / 超时 / 译文仍含中文 → 退回原句检索（不比本层缺失更差）。
+# -----------------------------------------------------------------
+_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
+_TRANSLATE_CACHE = {}   # 进程内缓存：原句 → 译文（重复提问不再调模型）
+
+TRANSLATE_PROMPT = (
+    "把用户的问题翻译成英文，用于检索一本英文健身食谱教材。"
+    "菜名、食材、度量单位要译成英文惯用说法"
+    "（例如：高蛋白法式吐司→protein French toast，汤匙→tablespoon，度→degrees F）。"
+    "只输出一句话英文译文，不要解释、不要引号、不要任何多余内容。"
+)
+
+
+def translate_query(query, use_cache=True):
+    """中文问题 → 英文检索式。非中文直接返回原句。
+    任何异常都降级返回原句——本层的最坏情况等价于没有本层。"""
+    if not _CJK_RE.search(query):
+        return query
+    if use_cache and query in _TRANSLATE_CACHE:
+        return _TRANSLATE_CACHE[query]
+    try:
+        out = (llm_call(TRANSLATE_PROMPT, query, max_retries=1) or "").strip()
+        out = out.strip("\"'“”‘’").strip()
+        if not out or _CJK_RE.search(out):   # 空/仍含中文 → 判为翻译失败
+            return query
+        _TRANSLATE_CACHE[query] = out
+        return out
+    except Exception:  # noqa: BLE001  网络/超时/限流一律降级
+        return query
+
+
 def ask(query, chunks, vectors):
-    retrieved, lex_best = retrieve(query, chunks, vectors)
+    retrieval_query = translate_query(query)          # 检索走译文
+    if retrieval_query != query:
+        print(f"  [翻译] {query} → {retrieval_query}", flush=True)
+    retrieved, lex_best = retrieve(retrieval_query, chunks, vectors)
     top_score = retrieved[0][1] if retrieved else 0.0
     print(f"  [检索] top_score={top_score:.4f}, lex={lex_best:.3f}, 召回{len(retrieved)}块")
 
