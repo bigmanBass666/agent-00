@@ -6,6 +6,23 @@
 
 基于指定课程教材 PDF 构建知识库，实现**带页码引用**的问答：只查教材、逐句给出处、检索不到如实说明、答不上自动转人工。
 
+## 交付物索引（课程 v2 第七节 7 项 + 任务书三件套）
+
+> 老师/评审看这里，逐项点击直达。
+
+| # | 交付物 | 文件 | 说明 |
+|---|---|---|---|
+| 1 | 知识库 + 构建脚本 | [`kb_chunks.json`](project1/kb_chunks.json) · [`kb_vectors.npy`](project1/kb_vectors.npy) · [`build_kb.py`](project1/build_kb.py) | 159 块（142 章节），可独立重建 |
+| 2 | 检索工具 + 调用说明 | [`rag.py`](project1/rag.py)（`knowledge_search`） · 本文件「快速开始」 | 返回带页码片段，两段式 + 混合召回 |
+| 3 | 系统提示词 + 设计说明 | [`system_prompt.txt`](project1/prompt/system_prompt.txt) · [`提示词设计说明.md`](project1/docs/提示词设计说明.md) | R1~R6 逐条落地 + rationale |
+| 4 | 智能体配置 + 启动说明 | [`config.py`](project1/config.py) · [`.env.example`](project1/.env.example) · 本文件「快速开始」 | 密钥走环境变量，不入库 |
+| 5 | 测试报告（DOCX） | [`测试报告.docx`](project1/docs/测试报告.docx)（源 [`.md`](project1/docs/测试报告.md)） | 50 题 + 失败案例逐条归因 |
+| 6 | 实施过程 PPT（20 页） | [`智能问答系统_实施过程.pptx`](project1/docs/智能问答系统_实施过程.pptx) | 含每页演讲者备注（口播稿） |
+| 7 | 小组分工说明（DOCX） | [`小组分工说明.docx`](project1/docs/小组分工说明.docx) | 学号已填，贡献说明齐 |
+| — | 设计/复盘文档 | [`设计文档.md`](project1/设计文档.md) | 分块/Prompt/拒答/失败案例≥3/再做一次怎么改 |
+| — | 评测数据 | [`evals/project1/`](evals/project1/) | 评测集 50 条 + 逐条判定 + 统计摘要 |
+| — | 会议纪要 | [`minutes/`](minutes/) | 每课一份（合规要求） |
+
 ## 文档导航（找什么看这里）
 
 | 要找什么 | 去哪 |
@@ -83,10 +100,11 @@ agent-00/
     ├── 设计文档.md             # 分块策略 / Prompt / 拒答机制 / 失败案例 / 归类说明
     ├── prompt/system_prompt.txt   # 系统提示词（交付物 3）
     ├── docs/
-    │   ├── 测试报告.md          # 交付物 5（定稿后转 Office）
+    │   ├── 测试报告.md / 测试报告.docx      # 交付物 5
     │   ├── 提示词设计说明.md     # 提示词 rationale
-    │   ├── 小组分工说明.md       # 交付物 7（定稿后转 Office）
-    │   ├── PPT大纲.md          # 交付物 6（定稿后转 PPTX）
+    │   ├── 小组分工说明.md / .docx  # 交付物 7
+    │   ├── 智能问答系统_实施过程.pptx # 交付物 6（20 页，含演讲者备注）
+    │   ├── PPT大纲.md          # PPT 内容稿（源）
     │   ├── 对比实验_混合召回.md  # A/B 记录
     │   ├── 对比实验_分块粒度.md  # A/B 记录
     │   ├── 决策日志.md          # 决策与自我推翻（时间线）
