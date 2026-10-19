@@ -81,14 +81,36 @@ project1/
         └── results_round2.jsonl  # 第 2 轮（混合召回 + Prompt 重写）
 ```
 
-## 换教材流程
+## 换教材流程（多书并存，不覆盖主线）
 
-1. 将新 PDF 放入 project1/ 目录
-2. 修改 `config.py` 中 `PDF_PATH` 指向新文件
-3. 运行 `python build_kb.py` 重建知识库
-4. 运行 `python validate_kb.py` 校验
-5. 准备新评测集，运行 `python run_eval_v2.py`
-6. 运行 `python calibrate_threshold.py` 校准阈值
+换书**只需配置，零代码改动**（支持 `.pdf` / `.epub`）：
+
+```bash
+# 1. 建独立库（路径全用环境变量隔离，主线 kb_* 文件不动）
+BOOK_PATH=/path/to/新书.pdf KB_VECTORS=evals/新书/vectors.npy KB_CHUNKS=evals/新书/chunks.json \
+KB_LANG=zh python build_kb.py        # 中文书加 KB_LANG=zh（关闭查询翻译层）
+
+# 2. 评测与判定（题集、结果路径同样隔离）
+EVAL_SET=evals/新书/eval_set.jsonl EVAL_RESULTS=evals/新书/results.jsonl \
+KB_VECTORS=evals/新书/vectors.npy KB_CHUNKS=evals/新书/chunks.json \
+python run_eval_v2.py --fresh
+JUDGE_RESULTS=evals/新书/results.jsonl python judge_results.py   # 课程口径五类判定
+
+# 3. 校验与阈值校准
+python validate_kb.py && python calibrate_threshold.py
+```
+
+**关键参数**：
+
+| 参数 | 作用 | 默认 |
+|---|---|---|
+| `BOOK_PATH` | 教材路径（.pdf/.epub） | `textbook.pdf` |
+| `KB_VECTORS` / `KB_CHUNKS` | 库输出与载入路径 | `kb_vectors.npy` / `kb_chunks.json` |
+| `KB_LANG` | 库语言：`en`=对中文提问启用查询翻译层 / `zh`=原生直通 | `en` |
+| `EVAL_SET` / `EVAL_RESULTS` | 评测题集 / 结果路径 | `evals/cookbook/...` |
+| `JUDGE_RESULTS` | 课程口径判定的目标结果文件 | `evals/cookbook/results.jsonl` |
+
+已有实例：`evals/atomic/`（《原子习惯》中文库，58 块 / 28 章）——换书验证数据与归因见 `docs/换书验证报告.md`。
 
 ## 行为约束（R1~R6）
 
@@ -107,11 +129,23 @@ python webui.py          # 打开 http://127.0.0.1:8000
 
 零依赖（Python 内置 `http.server`，未引入 Flask/FastAPI），单页界面提供：
 
-- 提问框（Enter 发送）
-- 回答区（拒答时用琥珀色提示条区分）
+- 提问框（Enter 发送）+ **知识库选择器**（自动按语言切换 / 手动指定）
+- 回答区（拒答时用琥珀色提示条区分，并显示**自动转人工工单号**）
 - **检索来源区**：展示引用的每个知识块，含页码标签、章节名、reranker 分数、原文片段
+- **答案卡片元信息**：命中的知识库 + 路由方式（`auto:zh` / `auto:en` / `manual:en`）
 
-演示价值：可直接向评审展示"回答来自第几页的哪一块"，同时证明 R1（先检索）与 R3（可溯源）。
+### 多语言自动切换（拓展 E1）
+- **中文问题** → 自动路由《原子习惯》中文库（原生检索，不翻译）
+- **英文问题** → 自动路由 Cookbook 英文库
+- **中文问题 + 手动选英文库** → 启用查询翻译层（中文 → 英文检索式，对应 N6）
+
+### 转人工工作台
+```bash
+open http://127.0.0.1:8000/handoff
+```
+拒答自动开工单（`webui/tickets.jsonl`）→ 工作台显示待处理/已处理统计 → 人工接单完成闭环。
+
+演示价值：可直接向评审展示"回答来自第几页的哪一块"，同时证明 R1（先检索）与 R3（可溯源）；双库路由与转人工分别对应拓展项 E1 与课堂"无法回答自动转人工"要求。
 
 ## 交付物清单（对齐 v2 作业文档第七节 7 项）
 
