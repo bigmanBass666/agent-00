@@ -30,6 +30,18 @@
 | 拒答 | 双层 | 阈值（reranker < 0.3 且词汇 < 0.85）+ LLM 判断 |
 | 转人工 | 自动工单 | 拒答 → tickets.jsonl → `/handoff` 工作台 |
 
+### 外部来源清单（课程要求：引用的代码/设计须注明来源）
+
+| 类型 | 名称 | 用途 | 来源 |
+|---|---|---|---|
+| 模型 | `BAAI/bge-m3` | 建库与查询 embedding（1024 维） | ModelScope / HuggingFace，经 SiliconFlow API 调用 |
+| 模型 | `BAAI/bge-reranker-v2-m3` | 检索精排（cross-encoder） | 同上 |
+| 模型 | `Qwen/Qwen3-8B` | 答案生成 | 同上 |
+| 方法 | RAG（Lewis et al., 2020） | 整体架构 | arXiv:2005.11401（课程资料清单【必看】） |
+| 方法 | Translate-Query-Retrieve | 跨语言查询翻译 | 跨语言 RAG 三种主流范式之一 |
+| 脚手架 | `materials/12_最小RAG骨架.md` | 项目起点 | 课程发放材料；本项目在其上重写检索与拒答链路 |
+| 前端 | 无第三方库 | WebUI / 人工工作台 | Python 内置 `http.server`，自写 |
+
 ## 快速开始
 
 ```bash

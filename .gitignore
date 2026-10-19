@@ -5,15 +5,15 @@
 __pycache__/
 *.pyc
 *.pyo
-*.npy
 
 # 教材 PDF（版权材料，不入库）
 textbook.pdf
 *.pdf
 
-# 生成的知识库文件（运行 build_kb.py 重新生成）
-kb_vectors.npy
-kb_chunks.json
+# ⚠️ 知识库成品文件必须入库（交付物 1）：
+#   评审没有教材 PDF（版权），无法重跑 build_kb.py，
+#   因此 kb_chunks.json / kb_vectors.npy 必须在仓库内，可直接读取验证。
+#   （不再排除 *.npy / kb_vectors.npy / kb_chunks.json）
 
 # 系统
 .DS_Store
