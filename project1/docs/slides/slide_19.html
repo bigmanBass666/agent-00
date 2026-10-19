@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>不足与下一步</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">18 · LIMITATIONS</p>
+    <h1 class="mt-4 text-[40px] leading-tight">不足与下一步，包括一次被自己推翻的优化</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[206px]">
+    <div class="grid grid-cols-2 gap-16">
+      <div>
+        <h3 class="text-2xl">已知限制（诚实披露）</h3>
+        <div class="mt-3 rule"></div>
+        <ul class="mt-4 text-lg text-neutral-600 space-y-3 leading-relaxed">
+          <li>评测存在 <strong class="text-neutral-900">±4pp 生成方差</strong>（temperature 0.3 边界题）；检索层零漂移</li>
+          <li>中文库受免费 API 波动影响（三次 90/70/76.7），页码引用与定位始终 100%</li>
+          <li>营养表"每份/整批"单位歧义</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-2xl">待办优先级</h3>
+        <div class="mt-3 rule"></div>
+        <ul class="mt-4 text-lg text-neutral-600 space-y-3 leading-relaxed">
+          <li><span class="mono text-sm accent">P1</span>　生成后实体校验（拦"换食材"幻觉）</li>
+          <li><span class="mono text-sm accent">P2</span>　词形还原（救 i18 类误拒）</li>
+          <li><span class="mono text-sm accent">P3</span>　模糊问题指代检测（救 v03）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[452px]">
+    <div class="border-l-2 border-[#8c3b2e] pl-8">
+      <p class="mono text-xs tracking-[.25em] text-neutral-400">一次优化的自我回退（完整记录在决策日志）</p>
+      <p class="mt-3 text-lg text-neutral-700 leading-relaxed">
+        为救中文定义题给词法层加 2-gram 召回——实测整体指标<strong class="text-neutral-900">反降</strong>（90.0%→86.7%、页码 100%→94.1%），目标题仍未救回 → <span class="accent">立即回退</span>。
+      </p>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-12">
+    <div class="rule"></div>
+    <p class="mt-4 text-base text-neutral-500">扫描版教材 OCR 已明确否决：531 页 70 分钟 + 错字污染检索，为验证把数据搞脏本末倒置。</p>
+  </div>
+</div></body></html>

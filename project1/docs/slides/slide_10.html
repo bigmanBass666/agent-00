@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>测试结果</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-12">
+    <p class="kicker">09 · RESULTS</p>
+    <h1 class="mt-3 text-[36px]">50 题实测：两条硬线双双通过</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[168px]">
+    <div class="grid grid-cols-5 gap-8">
+      <div><div class="h-px bg-[#8c3b2e]"></div>
+        <p class="mt-3 mono text-[34px] leading-none accent">89.7%</p>
+        <p class="mt-2 text-base text-neutral-600 leading-snug">准确率<br><span class="text-neutral-400">26/29 · ≥70%</span></p>
+      </div>
+      <div><div class="rule"></div>
+        <p class="mt-3 mono text-[34px] leading-none">90.5%</p>
+        <p class="mt-2 text-base text-neutral-600 leading-snug">拒答正确率<br><span class="text-neutral-400">19/21 · 硬指标</span></p>
+      </div>
+      <div><div class="rule"></div>
+        <p class="mt-3 mono text-[34px] leading-none">96.7%</p>
+        <p class="mt-2 text-base text-neutral-600 leading-snug">课内回答率<br><span class="text-neutral-400">29/30</span></p>
+      </div>
+      <div><div class="rule"></div>
+        <p class="mt-3 mono text-[34px] leading-none">100%</p>
+        <p class="mt-2 text-base text-neutral-600 leading-snug">页码引用覆盖率<br><span class="text-neutral-400">每个回答都有出处</span></p>
+      </div>
+      <div><div class="rule"></div>
+        <p class="mt-3 mono text-[34px] leading-none">2</p>
+        <p class="mt-2 text-base text-neutral-600 leading-snug">幻觉条数<br><span class="text-neutral-400">&lt;3 · 已逐条归因</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[352px]">
+    <p class="mono text-xs tracking-[.25em] text-neutral-400">换书验证 · 管线与教材解耦</p>
+    <table class="mt-3 w-full border-collapse">
+      <thead><tr class="border-b border-neutral-800">
+        <th class="py-2.5 pr-6 text-left text-sm font-normal text-neutral-400">指标</th>
+        <th class="py-2.5 pr-6 text-left text-sm font-normal text-neutral-400">Cookbook（英文 · 180 块 · 50 题）</th>
+        <th class="py-2.5 text-left text-sm font-normal text-neutral-400">《原子习惯》（中文 · 58 块 · 30 题）</th>
+      </tr></thead>
+      <tbody class="text-base mono">
+        <tr class="border-b border-neutral-200"><td class="py-2.5 pr-6 text-neutral-600">拒答正确率</td><td class="py-2.5 pr-6 text-neutral-800">90.5%（课程口径）</td><td class="py-2.5 accent">90.0 / 70.0 / 76.7（三次）</td></tr>
+        <tr class="border-b border-neutral-200"><td class="py-2.5 pr-6 text-neutral-600">页码引用覆盖率</td><td class="py-2.5 pr-6 text-neutral-800">100%</td><td class="py-2.5 text-neutral-800">100%</td></tr>
+        <tr><td class="py-2.5 pr-6 text-neutral-600">R6 抄原文</td><td class="py-2.5 pr-6 text-neutral-800">0 条</td><td class="py-2.5 text-neutral-800">0 条</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-10">
+    <div class="rule"></div>
+    <div class="mt-4 flex items-start justify-between gap-10">
+      <p class="text-lg text-neutral-900">换掉语言、题材、结构，关键指标保持 → <strong>换书只改一行配置，主线 50 题数据一字未动</strong></p>
+      <p class="text-sm text-neutral-500 max-w-[420px] text-right leading-relaxed">主动披露：中文库受免费 API 波动影响（三次 90/70/76.7），页码引用与定位始终 100%</p>
+    </div>
+  </div>
+</div></body></html>

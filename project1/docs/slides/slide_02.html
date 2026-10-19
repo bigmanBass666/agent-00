@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>问题</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">01 · PROBLEM</p>
+    <h1 class="mt-4 text-[40px] leading-tight">大模型记的是语言统计，不是你的教材</h1>
+    <p class="mt-3 text-lg text-neutral-500">让它"翻着书回答"：每个事实都能翻回原书页码</p>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[236px]">
+    <div class="grid grid-cols-3 gap-14">
+      <div>
+        <p class="mono text-sm text-neutral-400">R2</p>
+        <h3 class="mt-2 text-2xl">只查教材</h3>
+        <div class="mt-4 rule"></div>
+        <p class="mt-4 text-lg text-neutral-600 leading-relaxed">事实依据只能来自检索到的原文，模型内部知识被<strong class="text-neutral-900">完全隔离</strong>。</p>
+      </div>
+      <div>
+        <p class="mono text-sm text-neutral-400">R3</p>
+        <h3 class="mt-2 text-2xl">必须给页码</h3>
+        <div class="mt-4 rule"></div>
+        <p class="mt-4 text-lg text-neutral-600 leading-relaxed">每个事实后标注<span class="mono">【教材 p.XX】</span>，可当场翻书核对。</p>
+      </div>
+      <div>
+        <p class="mono text-sm text-neutral-400">R5</p>
+        <h3 class="mt-2 text-2xl">没有就说没有</h3>
+        <div class="mt-4 rule"></div>
+        <p class="mt-4 text-lg text-neutral-600 leading-relaxed">教材没写的一律回答"未找到"——<strong class="text-neutral-900">宁可不答，不准编造</strong>。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-16">
+    <div class="rule"></div>
+    <div class="mt-6 flex items-start justify-between">
+      <div>
+        <p class="mono text-[11px] tracking-[.25em] text-neutral-400">教材</p>
+        <p class="mt-2 text-xl text-neutral-800">The Anabolic Cookbook 2.0<span class="text-neutral-500 text-base"> 205 页 · 209 书签 · 142 章节</span></p>
+      </div>
+      <p class="text-base text-neutral-500 max-w-[420px] text-right leading-relaxed">一菜一章，语义单元天然清晰；与参考案例完全差异化</p>
+    </div>
+  </div>
+</div></body></html>

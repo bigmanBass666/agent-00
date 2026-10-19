@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>查询翻译层</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-12">
+    <p class="kicker">16 · QUERY TRANSLATION</p>
+    <h1 class="mt-3 text-[36px] leading-tight">一个"分数很高却答不出"的隐蔽失败</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[168px]">
+    <div class="grid grid-cols-3 gap-10">
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">现象</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-700 leading-relaxed">英文库 + 中文提问，课内假拒答率 <span class="mono accent text-2xl">25%</span>（英文基线 3%）</p>
+      </div>
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">隐蔽点</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-700 leading-relaxed"><span class="mono">i03 怎么做高蛋白千层面</span> top=<span class="mono accent">0.457</span> 已过阈值，但检索到错的段落 → 模型只能拒答</p>
+      </div>
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">业界依据</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-700 leading-relaxed">跨语言 RAG 三种主流范式之一（Translate-Query-Retrieve）；中文实测翻译枢纽后命中 71% → 80%</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[352px]">
+    <div class="rule"></div>
+    <div class="mt-8 grid grid-cols-2 gap-16">
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">实现</p>
+        <p class="mt-2 text-lg text-neutral-800 leading-relaxed">CJK 检测 → LLM 译成英文检索式 → 缓存 → <strong class="text-neutral-900">三级降级</strong>（失败/超时/仍含中文都回原句）</p>
+      </div>
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">关键设计</p>
+        <p class="mt-2 text-lg text-neutral-800 leading-relaxed"><strong class="text-neutral-900">检索用译文，生成仍用原始中文问题</strong>——回答语言和页码规则零影响</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[512px]">
+    <div class="grid grid-cols-4 gap-8">
+      <div><div class="h-px bg-[#8c3b2e]"></div><p class="mt-3 mono text-[30px] leading-none accent">3→0</p><p class="mt-2 text-sm text-neutral-600">中文 12 题拒答数<br><span class="text-neutral-400">25% → 0%</span></p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-[30px] leading-none">3/3</p><p class="mt-2 text-sm text-neutral-600">隐蔽失败题救回<br><span class="text-neutral-400">i03/i04/i07</span></p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-[30px] leading-none">0</p><p class="mt-2 text-sm text-neutral-600">英文路径触发次数<br><span class="text-neutral-400">代码级零侵入</span></p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-[30px] leading-none">0</p><p class="mt-2 text-sm text-neutral-600">检索漂移 >0.15<br><span class="text-neutral-400">检索层稳定</span></p></div>
+    </div>
+  </div>
+</div></body></html>

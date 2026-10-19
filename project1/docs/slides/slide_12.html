@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>失败案例1</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">11 · FAILURE 1</p>
+    <h1 class="mt-4 text-[38px] leading-tight">最贵的 bug：检索对了，模型却看不见答案</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[204px]">
+    <div class="grid grid-cols-3 gap-10">
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">现象</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-600 leading-relaxed">
+          i17 "1 cup 多少 tbsp" 被拒答；<br>i13 reranker 给 <span class="mono">0.98</span> 高分仍被拒答。
+        </p>
+      </div>
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">排查路径</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-600 leading-relaxed">
+          先查召回（正确块在 top-20）→ 再查 reranker（排第一）→ <strong class="text-neutral-900">最后打印实际喂给模型的 context</strong>
+        </p>
+      </div>
+      <div>
+        <p class="mono text-xs tracking-[.25em] text-neutral-400">根因</p>
+        <div class="mt-2 rule"></div>
+        <p class="mt-3 text-lg text-neutral-600 leading-relaxed">
+          <span class="mono text-base">chunk['text'][:2000]</span><br>全书 38% 的块超过 2000 字符，答案在末尾被切掉。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[420px]">
+    <div class="rule"></div>
+    <div class="mt-8">
+      <p class="text-2xl text-neutral-900 leading-snug">修复：去掉截断（最长块 3501 字符，3 块 ≈ 10.5k，Qwen3-8B 32k 上下文完全吃得下）。</p>
+      <p class="mt-3 text-lg text-neutral-500">R2 加整套混合召回时的"零提升"，罪魁祸首就是它——不是算法问题，是数据管道问题。</p>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-14">
+    <div class="rule"></div>
+    <p class="mt-5 text-lg text-neutral-800">教训：RAG 的失败有 80% 不在模型。<strong>养成打印最终 prompt 的习惯，比调任何参数都有效。</strong></p>
+  </div>
+</div></body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>工程规范</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">14 · ENGINEERING</p>
+    <h1 class="mt-4 text-[40px]">工程规范：换一本书，只改一行配置</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[200px]">
+    <p class="mono text-xs tracking-[.25em] text-neutral-400">模块划分（每层可独立验证）</p>
+    <div class="mt-4 grid grid-cols-4 gap-8">
+      <div><div class="rule"></div><p class="mt-3 mono text-base text-neutral-900">config.py</p><p class="mt-1 text-sm text-neutral-500">阈值 / 模型 / 路径</p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-base text-neutral-900">build_kb.py</p><p class="mt-1 text-sm text-neutral-500">提取 / 分块 / 向量化</p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-base text-neutral-900">rag.py</p><p class="mt-1 text-sm text-neutral-500">翻译 / 检索 / 生成</p></div>
+      <div><div class="rule"></div><p class="mt-3 mono text-base text-neutral-900">run_eval_v2.py</p><p class="mt-1 text-sm text-neutral-500">评测 / 判定 / 统计</p></div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[368px]">
+    <div class="grid grid-cols-2 gap-16">
+      <div>
+        <h3 class="text-xl">换书三步</h3>
+        <div class="mt-3 rule"></div>
+        <p class="mt-4 mono text-base text-neutral-700 leading-loose">
+          BOOK_PATH=新书.pdf python build_kb.py<br>
+          → validate_kb.py<br>
+          → run_eval_v2.py
+        </p>
+        <p class="mt-2 text-sm text-neutral-500">多书用 KB_VECTORS / KB_CHUNKS 隔离，互不覆盖</p>
+      </div>
+      <div>
+        <h3 class="text-xl">交付与安全</h3>
+        <div class="mt-3 rule"></div>
+        <ul class="mt-4 text-base text-neutral-600 space-y-2 leading-relaxed">
+          <li>提示词独立成文件，可单独评审</li>
+          <li>API Key 走 .env + gitignore，仓库无明文</li>
+          <li>一键流程：build → validate → eval → judge</li>
+          <li>支持云部署（Procfile），可现场跑</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-14">
+    <div class="rule"></div>
+    <p class="mt-5 text-lg text-neutral-800">管线与教材解耦：已在 <strong>2 本书</strong>上验证（英文 Cookbook 205 页 / 中文《原子习惯》286 页）</p>
+  </div>
+</div></body></html>

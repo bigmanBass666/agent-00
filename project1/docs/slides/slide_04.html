@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>系统架构</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">03 · ARCHITECTURE</p>
+    <h1 class="mt-4 text-[40px]">系统架构：一页看懂全链路</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[200px]">
+    <!-- 第一行 -->
+    <div class="flex items-start gap-6">
+      <div class="w-[300px]">
+        <p class="mono text-xs text-neutral-400">01 QUERY</p>
+        <p class="mt-2 text-xl">查询翻译</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">中文 → 英文检索式<br>缓存 + 三级降级回原句</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs text-neutral-400">02 RETRIEVE</p>
+        <p class="mt-2 text-xl">双路召回</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">向量 top-20 + IDF 词汇 top-20<br>合并去重 ≤40</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs text-neutral-400">03 RERANK</p>
+        <p class="mt-2 text-xl">精排</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">cross-encoder<br>40 → 3 块</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs accent">GATE 1</p>
+        <p class="mt-2 text-xl">阈值拒答</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">分 &lt; 0.3 且词汇 &lt; 0.85<br>直接拒，不调模型</p>
+      </div>
+    </div>
+
+    <div class="mt-10 h-px bg-neutral-200"></div>
+
+    <!-- 第二行 -->
+    <div class="mt-10 flex items-start gap-6">
+      <div class="w-[300px]">
+        <p class="mono text-xs text-neutral-400">04 GENERATE</p>
+        <p class="mt-2 text-xl">Qwen3-8B 生成</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">3 块原文 + 页码/章节/相关度<br>用原始问题，回答语言不变</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs accent">GATE 2</p>
+        <p class="mt-2 text-xl">LLM 层拒答</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">拦"看着相关、书里没有"<br>的诱导题</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs text-neutral-400">05 OUTPUT</p>
+        <p class="mt-2 text-xl">回答 + 【教材 p.XX】</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">每个事实带页码<br>可翻书核对</p>
+      </div>
+      <div class="w-6 pt-6 text-neutral-300">→</div>
+      <div class="w-[300px]">
+        <p class="mono text-xs accent">FALLBACK</p>
+        <p class="mt-2 text-xl">自动转人工</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">拒答 → 开工单<br>→ /handoff 接单</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-14">
+    <div class="rule"></div>
+    <p class="mt-6 text-[26px] text-neutral-900 leading-snug">翻译在前，检索两路，<span class="accent">拒答两层</span>，答不上转人工——每层都能单独验证。</p>
+  </div>
+</div></body></html>

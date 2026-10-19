@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>拒答机制</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">07 · REFUSAL</p>
+    <h1 class="mt-4 text-[40px] leading-tight">单靠阈值会漏，单靠 LLM 会飘</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[214px]">
+    <div class="grid grid-cols-2 gap-16">
+      <div>
+        <p class="mono text-xs accent tracking-[.25em]">GATE 1 · 阈值层</p>
+        <h3 class="mt-2 text-2xl">拦完全无关</h3>
+        <div class="mt-3 h-[2px] bg-neutral-300"></div>
+        <p class="mt-5 text-lg text-neutral-600 leading-relaxed">
+          检索分 &lt; <span class="mono">0.3</span> 且词汇分 &lt; <span class="mono">0.85</span> → 直接拒答，<strong class="text-neutral-900">不调模型</strong>。<br>
+          实测被拦题分数区间 <span class="mono accent">0.001~0.06</span>：零 token 成本、零幻觉风险。
+        </p>
+      </div>
+      <div>
+        <p class="mono text-xs accent tracking-[.25em]">GATE 2 · LLM 层</p>
+        <h3 class="mt-2 text-2xl">拦"看着相关"</h3>
+        <div class="mt-3 h-[2px] bg-neutral-300"></div>
+        <p class="mt-5 text-lg text-neutral-600 leading-relaxed">
+          <span class="mono text-base">Which protein powder brand should I buy?</span><br>
+          检索分 <span class="mono accent">0.579</span> 高于阈值，阈值层拦不住 → LLM 读资料后判定"无品牌推荐"正确拒答。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[486px]">
+    <div class="rule"></div>
+    <div class="mt-6">
+      <p class="text-xl text-neutral-800">反向通道：词汇分 ≥ 0.85 时绕过阈值</p>
+      <p class="mt-2 text-lg text-neutral-600">救表格类课内题（"1 杯多少汤匙"的 reranker 只有 0.17），避免误杀强证据查询。</p>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-14">
+    <div class="rule"></div>
+    <div class="mt-5 flex items-center justify-between">
+      <p class="text-lg text-neutral-800">两层各拦一类问题，<strong>每层可单独测试</strong>。</p>
+      <p class="mono text-base text-neutral-500">拒答正确率 90.5% ｜ 课内误杀 1/30</p>
+    </div>
+  </div>
+</div></body></html>

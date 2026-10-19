@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>转人工机制</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">17 · HUMAN HANDOFF</p>
+    <h1 class="mt-4 text-[40px] leading-tight">把课堂要求做成双端闭环</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[206px]">
+    <div class="border-l-2 border-[#8c3b2e] pl-8">
+      <p class="mono text-xs tracking-[.25em] text-neutral-400">课堂原话（10-12）</p>
+      <p class="mt-3 text-[22px] text-neutral-800 leading-relaxed">"找不到就不要回答……进一步的做的话，就是让它<span class="accent">自动转向人工</span>，人工在边上休息，AI 抛一个它答不了的问题过来，你才开始工作。"</p>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[376px]">
+    <div class="flex items-start gap-8">
+      <div class="flex-1">
+        <p class="mono text-xs text-neutral-400">01</p>
+        <p class="mt-2 text-lg text-neutral-900">AI 拒答</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">阈值层 / LLM 层判定未覆盖</p>
+      </div>
+      <div class="w-6 pt-5 text-neutral-300">→</div>
+      <div class="flex-1">
+        <p class="mono text-xs text-neutral-400">02</p>
+        <p class="mt-2 text-lg text-neutral-900">自动开工单</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">落 tickets.jsonl，返回工单号<br><span class="mono">T20261019-001</span></p>
+      </div>
+      <div class="w-6 pt-5 text-neutral-300">→</div>
+      <div class="flex-1">
+        <p class="mono text-xs text-neutral-400">03</p>
+        <p class="mt-2 text-lg text-neutral-900">问答页提示</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">"已自动转人工 · 工单 XXX · 人工已在 /handoff 接单"</p>
+      </div>
+      <div class="w-6 pt-5 text-neutral-300">→</div>
+      <div class="flex-1">
+        <p class="mono text-xs accent">04</p>
+        <p class="mt-2 text-lg text-neutral-900">人工工作台</p>
+        <p class="mt-2 text-sm text-neutral-500 leading-relaxed">待处理/已处理统计<br>点"开始处理"闭环</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-14">
+    <div class="rule"></div>
+    <div class="mt-5 flex items-center justify-between">
+      <p class="text-lg text-neutral-800">人工端看到的，<strong>正是系统最没把握的问题</strong>——两层拒答与工单是同一套判定的两个出口。</p>
+      <p class="text-base text-neutral-500">零依赖：内置 http.server</p>
+    </div>
+  </div>
+</div></body></html>

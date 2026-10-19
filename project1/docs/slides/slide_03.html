@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>技术选型</title>
+<script src="https://static.ima.qq.com/ima/pptxgen/ajax/libs/tailwind/3.4.17/index.js"></script>
+<link href="https://static.ima.qq.com/ima/pptxgen/ajax/libs/fonts/index.css" rel="stylesheet">
+<style>
+body{margin:0;padding:0;display:flex;align-items:center;min-height:100vh;background:#fff}
+.slide{width:1280px;height:720px;margin:0 auto;flex-shrink:0;overflow:hidden;position:relative;background:#fff;font-family:"Noto Sans SC",sans-serif;color:#111}
+h1,h2,h3{font-family:"Noto Serif SC",serif;font-weight:600;margin:0}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.accent{color:#8c3b2e}
+.rule{height:1px;background:#e5e5e5}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.32em;color:#8c3b2e}
+</style>
+</head>
+<body><div class="slide">
+  <div class="absolute left-20 top-14">
+    <p class="kicker">02 · TECH STACK</p>
+    <h1 class="mt-4 text-[40px]">技术选型：为什么不走参考路径</h1>
+  </div>
+
+  <div class="absolute left-20 right-20 top-[208px]">
+    <table class="w-full border-collapse">
+      <thead><tr class="border-b border-neutral-800">
+        <th class="py-3 pr-6 text-left text-sm font-normal tracking-wider text-neutral-400 w-[170px]">方案</th>
+        <th class="py-3 pr-6 text-left text-sm font-normal tracking-wider text-neutral-400 w-[320px]">组成</th>
+        <th class="py-3 text-left text-sm font-normal tracking-wider text-neutral-400">判断</th>
+      </tr></thead>
+      <tbody class="text-lg">
+        <tr class="border-b border-neutral-200">
+          <td class="py-4 pr-6 text-neutral-800">A 参考路径</td>
+          <td class="py-4 pr-6 mono text-base text-neutral-600">DSH + SQLite FTS5 + BM25</td>
+          <td class="py-4 text-neutral-600">与参考案例重复，关键词对口语化提问不敏感</td>
+        </tr>
+        <tr class="border-b border-neutral-200">
+          <td class="py-4 pr-6 text-neutral-800">B 框架路线</td>
+          <td class="py-4 pr-6 mono text-base text-neutral-600">ChromaDB/FAISS + LangChain</td>
+          <td class="py-4 text-neutral-600">仅 180 块，框架抽象成本大于收益</td>
+        </tr>
+        <tr class="border-b-2 border-[#8c3b2e]">
+          <td class="py-4 pr-6"><span class="mono text-sm accent">C 自研（变体）</span></td>
+          <td class="py-4 pr-6 mono text-base text-neutral-800">自研检索 + 直连 LLM API</td>
+          <td class="py-4 text-neutral-900">链路短、每层可打印中间结果、便于归因 <span class="accent">← 选择</span></td>
+        </tr>
+        <tr>
+          <td class="py-4 pr-6 text-neutral-800">D 低代码</td>
+          <td class="py-4 pr-6 mono text-base text-neutral-600">Dify / FastGPT</td>
+          <td class="py-4 text-neutral-600">无法体现技术深度</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="absolute left-20 right-20 bottom-16">
+    <div class="rule"></div>
+    <p class="mt-6 text-base text-neutral-500">归类：方案 C 变体——知识库用 json + npy 而非 SQLite；检索用 numpy 余弦 + 交叉编码器重排；未引入第三方 RAG 框架。</p>
+  </div>
+</div></body></html>
